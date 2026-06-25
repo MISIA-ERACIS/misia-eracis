@@ -1,0 +1,2451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OP–MIS DIGITAL™ · MISIA · ERACIS+ Jaén</title>
+<style>
+/* ═══════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════ */
+:root {
+  --navy:      #0f1d5e;
+  --blue:      #1a237e;
+  --blue-mid:  #283593;
+  --blue-light:#3949ab;
+  --indigo:    #5c6bc0;
+  --red:       #c62828;
+  --red-light: #ef5350;
+  --gold:      #f9a825;
+  --gold-light:#fdd835;
+  --green:     #2e7d32;
+  --green-l:   #43a047;
+  --orange:    #e65100;
+  --amber:     #ff8f00;
+  --teal:      #00695c;
+  --gray-bg:   #f4f5f9;
+  --gray-brd:  #dde1ec;
+  --gray-mid:  #8892b0;
+  --text:      #1a1f36;
+  --text-mid:  #4a5568;
+  --white:     #ffffff;
+  --shadow-sm: 0 1px 4px rgba(15,29,94,.08);
+  --shadow-md: 0 4px 16px rgba(15,29,94,.12);
+  --shadow-lg: 0 8px 32px rgba(15,29,94,.16);
+  --radius:    10px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+}
+
+/* ═══ RESET & BASE ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--gray-bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+img{max-width:100%}
+
+/* ═══ LAYOUT SHELL ═══ */
+.app-shell{display:grid;grid-template-columns:240px 1fr;grid-template-rows:56px 1fr;min-height:100vh}
+
+/* ═══ TOP BAR ═══ */
+.topbar{
+  grid-column:1/-1;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;
+  height:56px;
+  position:sticky;top:0;z-index:50;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-logo{
+  background:var(--red);
+  color:white;font-weight:900;font-size:.75rem;
+  padding:4px 10px;border-radius:4px;letter-spacing:.08em;
+}
+.topbar-title{color:white;font-weight:700;font-size:.95rem;letter-spacing:.04em}
+.topbar-sub{color:rgba(255,255,255,.45);font-size:.72rem;margin-left:6px}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.topbar-badge{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.8);font-size:.7rem;font-weight:600;
+  padding:3px 10px;border-radius:12px;letter-spacing:.06em;
+}
+.topbar-status{display:flex;align-items:center;gap:6px;font-size:.75rem;color:rgba(255,255,255,.5)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar{
+  background:var(--blue);
+  padding:1rem 0;
+  overflow-y:auto;
+  position:sticky;top:56px;height:calc(100vh - 56px);
+}
+.sidebar-section-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);padding:.75rem 1.25rem .3rem;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:.6rem 1.25rem;
+  color:rgba(255,255,255,.7);font-size:.85rem;font-weight:500;
+  cursor:pointer;transition:all .15s;border-left:3px solid transparent;
+}
+.nav-item:hover{background:rgba(255,255,255,.08);color:white}
+.nav-item.active{background:rgba(255,255,255,.12);color:white;border-left-color:var(--gold)}
+.nav-icon{font-size:1.1rem;width:20px;text-align:center}
+.nav-badge{
+  margin-left:auto;background:var(--red);color:white;
+  font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center;
+}
+.nav-badge.ok{background:var(--green)}
+.nav-badge.warn{background:var(--amber)}
+.sidebar-divider{height:1px;background:rgba(255,255,255,.08);margin:.5rem 1rem}
+
+/* ═══ MAIN CONTENT ═══ */
+.main{padding:1.5rem;overflow-y:auto}
+.page{display:none}
+.page.active{display:block}
+
+/* ═══ PAGE HEADER ═══ */
+.page-header{margin-bottom:1.5rem}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.page-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--indigo);margin-bottom:.3rem}
+.page-title{font-size:1.6rem;font-weight:800;color:var(--blue);letter-spacing:-.02em;line-height:1.2}
+.page-desc{font-size:.9rem;color:var(--text-mid);margin-top:.4rem;max-width:600px}
+.page-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+
+/* ═══ BUTTONS ═══ */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:600;
+  border:none;transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--blue);color:white}
+.btn-primary:hover{background:var(--blue-mid)}
+.btn-danger{background:var(--red);color:white}
+.btn-danger:hover{background:#b71c1c}
+.btn-success{background:var(--green);color:white}
+.btn-success:hover{background:#1b5e20}
+.btn-ghost{background:white;color:var(--text);border:1px solid var(--gray-brd)}
+.btn-ghost:hover{background:var(--gray-bg);border-color:var(--indigo)}
+.btn-gold{background:var(--gold);color:#5d3f00;font-weight:700}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-sm{padding:5px 12px;font-size:.77rem}
+.btn-icon{padding:6px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--gray-brd);color:var(--text-mid);font-size:1rem}
+.btn-icon:hover{background:var(--gray-bg)}
+
+/* ═══ CARDS ═══ */
+.card{background:white;border-radius:var(--radius);border:1px solid var(--gray-brd);box-shadow:var(--shadow-sm)}
+.card-header{padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--gray-brd);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.card-title{font-size:.9rem;font-weight:700;color:var(--text)}
+.card-body{padding:1.25rem}
+.card-footer{padding:.75rem 1.25rem;border-top:1px solid var(--gray-brd);background:#fafbfc;border-radius:0 0 var(--radius) var(--radius)}
+
+/* ═══ METRIC CARDS ═══ */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+.metric-card{
+  background:white;border:1px solid var(--gray-brd);border-radius:var(--radius);
+  padding:1.1rem;position:relative;overflow:hidden;
+}
+.metric-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.metric-card.blue::before{background:var(--blue)}
+.metric-card.red::before{background:var(--red)}
+.metric-card.green::before{background:var(--green)}
+.metric-card.gold::before{background:var(--gold)}
+.metric-card.indigo::before{background:var(--indigo)}
+.metric-card.teal::before{background:var(--teal)}
+.metric-icon{font-size:1.3rem;margin-bottom:.5rem}
+.metric-val{font-size:2rem;font-weight:800;color:var(--text);line-height:1}
+.metric-label{font-size:.72rem;color:var(--text-mid);margin-top:4px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.metric-change{font-size:.72rem;margin-top:.4rem;font-weight:600}
+.metric-change.up{color:var(--green)}
+.metric-change.down{color:var(--red)}
+.metric-change.neutral{color:var(--gray-mid)}
+
+/* ═══ GRID LAYOUTS ═══ */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.grid-main{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem}
+
+/* ═══ TABLES ═══ */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--gray-brd)}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+thead tr{background:var(--blue);color:white}
+th{padding:.7rem 1rem;font-weight:600;text-align:left;font-size:.75rem;letter-spacing:.04em;white-space:nowrap}
+td{padding:.65rem 1rem;border-bottom:1px solid var(--gray-brd);color:var(--text-mid)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#f8f9fd}
+tbody tr:hover td{color:var(--text)}
+
+/* ═══ BADGES & PILLS ═══ */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:700;white-space:nowrap}
+.badge-blue{background:#e8eaf6;color:#1a237e}
+.badge-red{background:#ffebee;color:#c62828}
+.badge-green{background:#e8f5e9;color:#2e7d32}
+.badge-gold{background:#fff8e1;color:#e65100}
+.badge-gray{background:#f0f0f0;color:#555}
+.badge-indigo{background:#ede7f6;color:#4527a0}
+.badge-teal{background:#e0f2f1;color:#00695c}
+
+/* ═══ PROGRESS BARS ═══ */
+.progress-bar-wrap{margin-bottom:1rem}
+.progress-label{display:flex;justify-content:space-between;margin-bottom:5px;font-size:.8rem}
+.progress-label span:first-child{font-weight:600;color:var(--text)}
+.progress-label span:last-child{color:var(--text-mid)}
+.progress-track{height:8px;background:var(--gray-brd);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.p-blue{background:var(--blue)}
+.p-green{background:var(--green)}
+.p-gold{background:var(--gold)}
+.p-red{background:var(--red)}
+.p-teal{background:var(--teal)}
+
+/* ═══ ALERTS ═══ */
+.alert{padding:.8rem 1rem;border-radius:var(--radius-sm);display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.75rem;font-size:.85rem}
+.alert-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.alert-text strong{font-weight:700;display:block;margin-bottom:2px}
+.alert-red{background:#ffebee;border-left:4px solid var(--red)}
+.alert-gold{background:#fff8e1;border-left:4px solid var(--gold)}
+.alert-green{background:#e8f5e9;border-left:4px solid var(--green)}
+.alert-blue{background:#e8eaf6;border-left:4px solid var(--blue)}
+
+/* ═══ FORM ELEMENTS ═══ */
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.form-label span{color:var(--red);margin-left:2px}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:8px 12px;border:1px solid var(--gray-brd);border-radius:var(--radius-sm);
+  font-size:.85rem;font-family:inherit;color:var(--text);background:white;
+  transition:border-color .15s,box-shadow .15s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(57,73,171,.12);
+}
+.form-textarea{min-height:80px;resize:vertical}
+.form-hint{font-size:.75rem;color:var(--gray-mid);margin-top:4px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+
+/* ═══ TABS ═══ */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--gray-brd);margin-bottom:1.25rem}
+.tab-btn{
+  padding:.6rem 1.1rem;font-size:.83rem;font-weight:600;color:var(--text-mid);
+  background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;
+  cursor:pointer;transition:all .15s;
+}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ═══ ÍNDICE MISIA ═══ */
+.indice-ring-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.indice-ring{position:relative;width:120px;height:120px}
+.indice-ring svg{transform:rotate(-90deg)}
+.indice-ring-val{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:1.6rem;font-weight:900;color:var(--blue);text-align:center;line-height:1;
+}
+.indice-ring-sub{font-size:.55rem;color:var(--text-mid);display:block;margin-top:2px;font-weight:500}
+.indice-nivel{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:10px;margin-top:.25rem}
+
+/* ═══ PARTICIPANT CARD ═══ */
+.participant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.participant-card{
+  background:white;border:1px solid var(--gray-brd);border-radius:var(--radius);
+  padding:1.1rem;cursor:pointer;transition:all .2s;
+}
+.participant-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.participant-avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.95rem;color:white;margin-bottom:.75rem;
+}
+.participant-name{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.participant-id{font-size:.72rem;color:var(--gray-mid)}
+.participant-stats{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
+
+/* ═══ ACTUACION CARD ═══ */
+.actuacion-list{display:flex;flex-direction:column;gap:.75rem}
+.actuacion-item{
+  background:white;border:1px solid var(--gray-brd);border-radius:var(--radius);
+  padding:1rem 1.25rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:start;
+}
+.actuacion-date{
+  background:var(--blue);color:white;border-radius:var(--radius-sm);
+  padding:.4rem .6rem;text-align:center;min-width:48px;
+}
+.actuacion-date-day{font-size:1.1rem;font-weight:800;line-height:1}
+.actuacion-date-mon{font-size:.6rem;text-transform:uppercase;opacity:.8}
+.actuacion-main h4{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.actuacion-main p{font-size:.8rem;color:var(--text-mid)}
+.actuacion-meta{display:flex;gap:.5rem;margin-top:.4rem;flex-wrap:wrap}
+
+/* ═══ EMBLEMA PODIUM ═══ */
+.emblema-podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:.75rem;align-items:end}
+.emblema-card{border-radius:var(--radius);padding:1.25rem;text-align:center;color:white;position:relative;overflow:hidden}
+.emblema-card.oro{background:linear-gradient(135deg,#f9a825,#f57f17)}
+.emblema-card.plata{background:linear-gradient(135deg,#b0bec5,#78909c)}
+.emblema-card.bronce{background:linear-gradient(135deg,#a1887f,#6d4c41)}
+.emblema-crown{font-size:1.8rem;margin-bottom:.4rem}
+.emblema-pos{font-size:.65rem;font-weight:700;opacity:.7;letter-spacing:.1em;text-transform:uppercase}
+.emblema-nombre{font-size:.85rem;font-weight:800;margin:.25rem 0}
+.emblema-score{font-size:1.5rem;font-weight:900;opacity:.9}
+.emblema-bg-num{
+  position:absolute;right:-8px;bottom:-12px;
+  font-size:5rem;font-weight:900;opacity:.12;line-height:1;
+}
+
+/* ═══ MEMORY ENGINE ═══ */
+.memory-block{
+  background:var(--navy);color:rgba(255,255,255,.85);
+  border-radius:var(--radius);padding:1.5rem;
+  font-family:'Courier New',monospace;font-size:.8rem;line-height:1.7;
+  max-height:320px;overflow-y:auto;
+}
+.memory-block .m-head{color:var(--gold);font-weight:700;font-size:.85rem}
+.memory-block .m-label{color:var(--indigo)}
+.memory-block .m-val{color:#a5d6a7}
+.memory-block .m-sep{color:rgba(255,255,255,.2)}
+
+/* ═══ DASHBOARD ALERTS ═══ */
+.alerts-list{display:flex;flex-direction:column;gap:.5rem}
+.alert-item{
+  background:white;border-radius:var(--radius-sm);border-left:4px solid;
+  padding:.65rem 1rem;display:flex;align-items:flex-start;gap:.75rem;
+}
+.alert-item.critico{border-color:var(--red)}
+.alert-item.advertencia{border-color:var(--amber)}
+.alert-item.info{border-color:var(--blue-light)}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.alert-item.critico .alert-dot{background:var(--red)}
+.alert-item.advertencia .alert-dot{background:var(--amber)}
+.alert-item.info .alert-dot{background:var(--blue-light)}
+.alert-item-text{font-size:.82rem;color:var(--text-mid)}
+.alert-item-text strong{color:var(--text);display:block;font-size:.83rem}
+
+/* ═══ PDF / DOCS OUTPUT ═══ */
+.doc-preview{
+  background:white;border:1px solid var(--gray-brd);border-radius:var(--radius);
+  padding:2rem;font-size:.85rem;line-height:1.8;max-height:440px;overflow-y:auto;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.04);
+}
+.doc-preview h1{font-size:1.15rem;color:var(--blue);text-align:center;margin-bottom:.25rem}
+.doc-preview h2{font-size:.95rem;color:var(--blue-mid);border-bottom:2px solid var(--gold);padding-bottom:4px;margin:1.2rem 0 .6rem}
+.doc-preview h3{font-size:.85rem;color:var(--blue);margin:.9rem 0 .3rem}
+.doc-preview p{margin-bottom:.5rem;color:var(--text-mid)}
+.doc-preview .doc-meta{text-align:center;font-size:.78rem;color:var(--gray-mid);margin-bottom:1.5rem}
+.doc-preview table{font-size:.78rem;margin:.75rem 0}
+.doc-preview th{background:var(--blue);color:white;padding:.45rem .75rem}
+.doc-preview td{padding:.4rem .75rem;border-bottom:1px solid var(--gray-brd)}
+
+/* ═══ TOAST NOTIFICATIONS ═══ */
+#toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem}
+.toast{
+  background:var(--navy);color:white;padding:.75rem 1.25rem;
+  border-radius:var(--radius-sm);font-size:.83rem;font-weight:500;
+  box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:.75rem;
+  animation:slideIn .3s ease;max-width:320px;
+}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+.toast.warning{background:var(--amber);color:#3e2300}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* ═══ MODALS ═══ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(15,29,94,.5);
+  z-index:200;align-items:center;justify-content:center;padding:1rem;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:white;border-radius:var(--radius-lg);padding:1.75rem;
+  width:100%;max-width:560px;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-title{font-size:1.05rem;font-weight:800;color:var(--blue)}
+.modal-close{background:none;border:none;font-size:1.2rem;color:var(--gray-mid);cursor:pointer;padding:4px}
+.modal-close:hover{color:var(--text)}
+.modal-footer{display:flex;justify-content:flex-end;gap:.5rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--gray-brd)}
+
+/* ═══ LOADING ═══ */
+.loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .app-shell{grid-template-columns:1fr;grid-template-rows:56px auto 1fr}
+  .sidebar{display:none;position:fixed;left:0;top:56px;height:calc(100vh - 56px);width:240px;z-index:100}
+  .sidebar.open{display:block}
+  .grid-2,.grid-3,.form-grid,.form-grid-3,.grid-main{grid-template-columns:1fr}
+  .emblema-podium{grid-template-columns:1fr}
+}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(26,35,126,.2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(26,35,126,.4)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════════════════ -->
+<div class="app-shell">
+
+<!-- ─── TOPBAR ─── -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo">OP-MIS</span>
+    <span class="topbar-title">MISIA™</span>
+    <span class="topbar-sub">Motor de Inserción Sociolaboral con Inteligencia Aplicada</span>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-status">
+      <span class="status-dot"></span>
+      Sistema activo
+    </div>
+    <span class="topbar-badge" id="mis-activo-badge">MIS-001</span>
+    <span class="topbar-badge" style="background:rgba(249,168,37,.15);border-color:rgba(249,168,37,.4);color:#f9a825;">ERACIS+ Jaén</span>
+  </div>
+</header>
+
+<!-- ─── SIDEBAR ─── -->
+<nav class="sidebar" id="sidebar">
+  <p class="sidebar-section-label">Principal</p>
+  <div class="nav-item active" data-page="dashboard">
+    <span class="nav-icon">📊</span> Dashboard
+  </div>
+  <div class="nav-item" data-page="participantes">
+    <span class="nav-icon">👥</span> Participantes
+    <span class="nav-badge" id="badge-participantes">0</span>
+  </div>
+  <div class="nav-item" data-page="actuaciones">
+    <span class="nav-icon">🔨</span> Actuaciones
+    <span class="nav-badge ok" id="badge-actuaciones">0</span>
+  </div>
+  <div class="nav-item" data-page="asistencia">
+    <span class="nav-icon">✅</span> Asistencia
+  </div>
+
+  <div class="sidebar-divider"></div>
+  <p class="sidebar-section-label">Evaluación</p>
+  <div class="nav-item" data-page="competencias">
+    <span class="nav-icon">📈</span> Competencias
+  </div>
+  <div class="nav-item" data-page="indice">
+    <span class="nav-icon">🎯</span> Índice MISIA™
+  </div>
+  <div class="nav-item" data-page="insercion">
+    <span class="nav-icon">💼</span> Inserción
+  </div>
+
+  <div class="sidebar-divider"></div>
+  <p class="sidebar-section-label">Documentación</p>
+  <div class="nav-item" data-page="evidencias">
+    <span class="nav-icon">📸</span> Evidencias
+  </div>
+  <div class="nav-item" data-page="memoria">
+    <span class="nav-icon">📄</span> Memory Engine™
+    <span class="nav-badge warn">!</span>
+  </div>
+  <div class="nav-item" data-page="certificados">
+    <span class="nav-icon">🏅</span> Certificados
+  </div>
+
+  <div class="sidebar-divider"></div>
+  <p class="sidebar-section-label">Sistema</p>
+  <div class="nav-item" data-page="alertas">
+    <span class="nav-icon">🔔</span> Alertas
+    <span class="nav-badge" id="badge-alertas">0</span>
+  </div>
+  <div class="nav-item" data-page="emblema">
+    <span class="nav-icon">🏆</span> Actuación Emblema™
+  </div>
+  <div class="nav-item" data-page="config">
+    <span class="nav-icon">⚙️</span> Configuración
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main class="main" id="main-content">
+
+<!-- ══════════════ PAGE: DASHBOARD ══════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Panel principal</p>
+        <h1 class="page-title">Dashboard del Formador</h1>
+        <p class="page-desc">Visión en tiempo real del MIS activo — <span id="fecha-hoy"></span></p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost btn-sm" onclick="actualizarDashboard()">🔄 Actualizar</button>
+        <button class="btn btn-primary btn-sm" onclick="navTo('memoria')">📄 Generar Memoria</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métricas principales -->
+  <div class="metrics-grid">
+    <div class="metric-card blue">
+      <div class="metric-icon">👥</div>
+      <div class="metric-val" id="m-participantes">0</div>
+      <div class="metric-label">Participantes activos</div>
+      <div class="metric-change neutral" id="m-part-sub">—</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-icon">✅</div>
+      <div class="metric-val" id="m-presentes">0</div>
+      <div class="metric-label">Presentes hoy</div>
+      <div class="metric-change" id="m-asist-pct">—</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-icon">⚠️</div>
+      <div class="metric-val" id="m-riesgo">0</div>
+      <div class="metric-label">En riesgo</div>
+      <div class="metric-change down" id="m-riesgo-sub">Índice &lt; 50</div>
+    </div>
+    <div class="metric-card gold">
+      <div class="metric-icon">🔨</div>
+      <div class="metric-val" id="m-actuaciones">0</div>
+      <div class="metric-label">Actuaciones totales</div>
+      <div class="metric-change neutral" id="m-horas">—</div>
+    </div>
+    <div class="metric-card teal">
+      <div class="metric-icon">💼</div>
+      <div class="metric-val" id="m-inserciones">0</div>
+      <div class="metric-label">Inserciones</div>
+      <div class="metric-change up" id="m-ins-pct">—</div>
+    </div>
+    <div class="metric-card indigo">
+      <div class="metric-icon">🎯</div>
+      <div class="metric-val" id="m-indice-medio">—</div>
+      <div class="metric-label">Índice MISIA™ medio</div>
+      <div class="metric-change neutral" id="m-ind-nivel">—</div>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <!-- Col 1 -->
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <!-- Alertas activas -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔔 Alertas activas</span>
+          <button class="btn btn-ghost btn-sm" onclick="navTo('alertas')">Ver todas</button>
+        </div>
+        <div class="card-body" id="dashboard-alertas">
+          <p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:.5rem">Sin alertas críticas ✓</p>
+        </div>
+      </div>
+
+      <!-- Últimas actuaciones -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔨 Últimas actuaciones</span>
+          <button class="btn btn-primary btn-sm" onclick="abrirModalActuacion()">+ Nueva</button>
+        </div>
+        <div class="card-body" id="dashboard-actuaciones-list">
+          <p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:.5rem">Sin actuaciones registradas</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Col 2 -->
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <!-- Índice global -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">📊 Distribución del Índice</span></div>
+        <div class="card-body">
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>🔵 Destacados</span><span id="pct-destacados">0%</span></div>
+            <div class="progress-track"><div class="progress-fill p-blue" id="bar-destacados" style="width:0%"></div></div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>🟢 Buen desempeño</span><span id="pct-bueno">0%</span></div>
+            <div class="progress-track"><div class="progress-fill p-green" id="bar-bueno" style="width:0%"></div></div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>🟡 Adecuado</span><span id="pct-adecuado">0%</span></div>
+            <div class="progress-track"><div class="progress-fill p-gold" id="bar-adecuado" style="width:0%"></div></div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-label"><span>🟠 Riesgo medio</span><span id="pct-riesgo-m">0%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="background:var(--amber);width:0%" id="bar-riesgo-m"></div></div>
+          </div>
+          <div class="progress-bar-wrap" style="margin-bottom:0">
+            <div class="progress-label"><span>🔴 Riesgo alto</span><span id="pct-riesgo-a">0%</span></div>
+            <div class="progress-track"><div class="progress-fill p-red" id="bar-riesgo-a" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inserción -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">💼 Inserción sociolaboral</span></div>
+        <div class="card-body" id="dashboard-insercion-stats">
+          <p style="color:var(--gray-mid);font-size:.85rem">Sin datos de inserción</p>
+        </div>
+      </div>
+
+      <!-- Emblema rápido -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🏆 Actuación Emblema™</span>
+          <button class="btn btn-ghost btn-sm" onclick="navTo('emblema')">Ver top 3</button>
+        </div>
+        <div class="card-body" id="dashboard-emblema">
+          <p style="color:var(--gray-mid);font-size:.85rem">Sin actuaciones puntuadas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: PARTICIPANTES ══════════════ -->
+<div class="page" id="page-participantes">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Gestión de personas</p>
+        <h1 class="page-title">Participantes</h1>
+        <p class="page-desc">Registro y seguimiento de todos los participantes del MIS activo</p>
+      </div>
+      <div class="page-actions">
+        <input class="form-input" style="width:200px" placeholder="🔍 Buscar..." id="buscar-participante" oninput="filtrarParticipantes(this.value)">
+        <button class="btn btn-primary" onclick="abrirModalParticipante()">+ Nuevo participante</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:1rem">
+    <div class="metric-card blue">
+      <div class="metric-val" id="stat-total-part">0</div>
+      <div class="metric-label">Total registrados</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-val" id="stat-activos">0</div>
+      <div class="metric-label">Activos</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-val" id="stat-riesgo-part">0</div>
+      <div class="metric-label">En riesgo</div>
+    </div>
+  </div>
+
+  <div class="participant-grid" id="participantes-grid">
+    <p style="color:var(--gray-mid);font-size:.9rem;padding:2rem;text-align:center;grid-column:1/-1">
+      No hay participantes registrados. Añade el primero con el botón "Nuevo participante".
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: ACTUACIONES ══════════════ -->
+<div class="page" id="page-actuaciones">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Registro de trabajo</p>
+        <h1 class="page-title">Actuaciones</h1>
+        <p class="page-desc">Intervenciones en zona ERACIS+. Cada actuación genera competencias, horas y evidencias.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost btn-sm" onclick="filtrarActuaciones('todas')">Todas</button>
+        <button class="btn btn-ghost btn-sm" onclick="filtrarActuaciones('activa')">Activas</button>
+        <button class="btn btn-ghost btn-sm" onclick="filtrarActuaciones('finalizada')">Finalizadas</button>
+        <button class="btn btn-primary" onclick="abrirModalActuacion()">+ Nueva actuación</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="actuacion-list" id="actuaciones-list">
+    <p style="color:var(--gray-mid);font-size:.9rem;padding:2rem;text-align:center">
+      Sin actuaciones registradas. Añade la primera con el botón "Nueva actuación".
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: ASISTENCIA ══════════════ -->
+<div class="page" id="page-asistencia">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Control diario</p>
+        <h1 class="page-title">Registro de asistencia</h1>
+        <p class="page-desc">Pasa lista rápida para la actuación del día</p>
+      </div>
+      <div class="page-actions">
+        <select class="form-select" style="width:220px" id="sel-actuacion-asist">
+          <option>Seleccionar actuación...</option>
+        </select>
+        <button class="btn btn-success" onclick="guardarAsistencia()">💾 Guardar lista</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" id="asist-titulo">Selecciona una actuación para pasar lista</span>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-ghost btn-sm" onclick="marcarTodos('si')">✅ Todos presentes</button>
+        <button class="btn btn-ghost btn-sm" onclick="marcarTodos('no')">❌ Todos ausentes</button>
+      </div>
+    </div>
+    <div class="card-body" id="lista-asistencia">
+      <p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:1rem">Selecciona una actuación para ver la lista de participantes</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: COMPETENCIAS ══════════════ -->
+<div class="page" id="page-competencias">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Evaluación competencial</p>
+        <h1 class="page-title">Competencias</h1>
+        <p class="page-desc">Los 4 saberes evaluados automáticamente por MISIA según rol y participación real en obra</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" onclick="calcularCompetencias()">🧮 Recalcular todo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Matriz de competencias por participante</span>
+      <div class="tabs" style="margin:0;border:none">
+        <button class="tab-btn active" onclick="verTabla('competencias')">Tabla</button>
+        <button class="tab-btn" onclick="verTabla('radar')">Radar</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table id="tabla-competencias">
+          <thead>
+            <tr>
+              <th>Participante</th>
+              <th>📚 Saber</th>
+              <th>🔧 Saber Hacer</th>
+              <th>🤝 Saber Ser</th>
+              <th>🧭 Saber Decidir</th>
+              <th>📊 Media</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="competencias-tbody">
+            <tr><td colspan="7" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Calcula las competencias con el botón "Recalcular todo"</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: ÍNDICE MISIA ══════════════ -->
+<div class="page" id="page-indice">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Evaluación integral</p>
+        <h1 class="page-title">Índice MISIA™</h1>
+        <p class="page-desc">Competencias (40%) · Asistencia (20%) · Actitud (15%) · Inserción (15%) · Impacto (10%)</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" onclick="calcularIndices()">🎯 Calcular índices</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="indices-grid" class="participant-grid">
+    <p style="color:var(--gray-mid);font-size:.9rem;padding:2rem;text-align:center;grid-column:1/-1">Pulsa "Calcular índices" para ver los resultados</p>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: INSERCIÓN ══════════════ -->
+<div class="page" id="page-insercion">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Objetivo final</p>
+        <h1 class="page-title">Inserción sociolaboral</h1>
+        <p class="page-desc">Registro de inserciones reales conseguidas por los participantes del MIS</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-success" onclick="abrirModalInsercion()">+ Registrar inserción</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:1.25rem">
+    <div class="metric-card green">
+      <div class="metric-val" id="ins-contratos">0</div>
+      <div class="metric-label">Contratos laborales</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-val" id="ins-formacion">0</div>
+      <div class="metric-label">En formación reglada</div>
+    </div>
+    <div class="metric-card gold">
+      <div class="metric-val" id="ins-busqueda">0</div>
+      <div class="metric-label">Búsqueda activa</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="card-title">Registro de inserciones</span></div>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Participante</th><th>Tipo inserción</th><th>Empresa / Entidad</th><th>Fecha</th><th>Estado</th></tr>
+          </thead>
+          <tbody id="insercion-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Sin inserciones registradas aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: EVIDENCIAS ══════════════ -->
+<div class="page" id="page-evidencias">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Documentación visual</p>
+        <h1 class="page-title">Evidencias</h1>
+        <p class="page-desc">Fotografías antes / durante / después de cada actuación. URL de Google Drive.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" onclick="abrirModalEvidencia()">+ Añadir evidencia</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:1rem">
+    <div class="metric-card blue"><div class="metric-val" id="evi-antes">0</div><div class="metric-label">Fotos Antes</div></div>
+    <div class="metric-card gold"><div class="metric-val" id="evi-durante">0</div><div class="metric-label">Fotos Durante</div></div>
+    <div class="metric-card green"><div class="metric-val" id="evi-despues">0</div><div class="metric-label">Fotos Después</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="card-title">Registro de evidencias</span></div>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Actuación</th><th>Tipo</th><th>Momento</th><th>Enlace Drive</th><th>Fecha</th></tr>
+          </thead>
+          <tbody id="evidencias-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Sin evidencias registradas</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: MEMORY ENGINE ══════════════ -->
+<div class="page" id="page-memoria">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Documentación automática</p>
+        <h1 class="page-title">Memory Engine™</h1>
+        <p class="page-desc">Genera automáticamente el 90% de la Memoria Técnica del MIS a partir de los datos registrados</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost btn-sm" onclick="generarMemoria()">🔄 Regenerar</button>
+        <button class="btn btn-gold" onclick="exportarMemoriaPDF()">📥 Exportar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="cambiarTab(this,'mem-preview')">📄 Vista previa Memoria</button>
+    <button class="tab-btn" onclick="cambiarTab(this,'mem-datos')">🗃️ Datos estructurados</button>
+    <button class="tab-btn" onclick="cambiarTab(this,'mem-appsscript')">⚙️ Código Apps Script</button>
+  </div>
+
+  <div class="tab-panel active" id="mem-preview">
+    <div class="doc-preview" id="memoria-preview">
+      <p style="color:var(--gray-mid);text-align:center;padding:2rem">Pulsa "Regenerar" para generar la Memoria Técnica del MIS activo</p>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="mem-datos">
+    <div class="memory-block" id="memoria-datos-json">
+      <span class="m-head">// MISIA MEMORY ENGINE v2.0</span><br>
+      <span class="m-label">// Esperando datos...</span><br>
+      <span class="m-sep">// Pulsa "Regenerar" para cargar</span>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="mem-appsscript">
+    <div class="card" style="margin-bottom:.75rem">
+      <div class="card-header">
+        <span class="card-title">⚙️ Código Apps Script — Memory Engine completo</span>
+        <button class="btn btn-ghost btn-sm" onclick="copiarCodigo()">📋 Copiar código</button>
+      </div>
+      <div class="card-body">
+        <div class="memory-block" id="codigo-appsscript" style="max-height:500px;font-size:.75rem">
+          <span class="m-head">// MISIA MEMORY ENGINE v2.0 — Google Apps Script</span><br>
+          <span class="m-sep">// Bloque 1: Resumen de actuaciones</span><br>
+          <span class="m-label">function generarResumenActuaciones() {</span><br>
+          &nbsp;&nbsp;const ss = SpreadsheetApp.getActiveSpreadsheet();<br>
+          &nbsp;&nbsp;const hAct = ss.getSheetByName("ACTUACIONES");<br>
+          &nbsp;&nbsp;const hMem = ss.getSheetByName("MEMORIA_DATOS");<br>
+          &nbsp;&nbsp;if (!hAct || hAct.getLastRow() &lt; 2) return;<br>
+          &nbsp;&nbsp;const data = hAct.getDataRange().getValues().slice(1);<br>
+          &nbsp;&nbsp;const totalHoras = data.reduce((s,r) => s + (parseFloat(r[5])||0), 0);<br>
+          &nbsp;&nbsp;const finalizadas = data.filter(r => String(r[7]).toUpperCase()==="FINALIZADA").length;<br>
+          &nbsp;&nbsp;hMem.appendRow(["TOTAL_ACTUACIONES", data.length, new Date()]);<br>
+          &nbsp;&nbsp;hMem.appendRow(["HORAS_TOTALES", totalHoras.toFixed(1), new Date()]);<br>
+          &nbsp;&nbsp;hMem.appendRow(["FINALIZADAS", finalizadas, new Date()]);<br>
+          <span class="m-label">}</span><br><br>
+          <span class="m-sep">// Bloque 2: Resultados e impacto</span><br>
+          <span class="m-label">function generarResumenResultados() {</span><br>
+          &nbsp;&nbsp;const ss = SpreadsheetApp.getActiveSpreadsheet();<br>
+          &nbsp;&nbsp;const hImp = ss.getSheetByName("IMPACTO");<br>
+          &nbsp;&nbsp;const hMem = ss.getSheetByName("MEMORIA_DATOS");<br>
+          &nbsp;&nbsp;if (!hImp || hImp.getLastRow() &lt; 2) return;<br>
+          &nbsp;&nbsp;const data = hImp.getDataRange().getValues().slice(1);<br>
+          &nbsp;&nbsp;const rrss = data.filter(r => r[3]).length;<br>
+          &nbsp;&nbsp;const prensa = data.filter(r => r[4]).length;<br>
+          &nbsp;&nbsp;const impactoVecinal = data.filter(r => r[5]).length;<br>
+          &nbsp;&nbsp;hMem.appendRow(["MENCIONES_RRSS", rrss, new Date()]);<br>
+          &nbsp;&nbsp;hMem.appendRow(["NOTAS_PRENSA", prensa, new Date()]);<br>
+          &nbsp;&nbsp;hMem.appendRow(["IMPACTO_VECINAL", impactoVecinal, new Date()]);<br>
+          <span class="m-label">}</span><br><br>
+          <span class="m-sep">// Bloque 3: Inserción sociolaboral</span><br>
+          <span class="m-label">function generarResumenInsercion() {</span><br>
+          &nbsp;&nbsp;const ss = SpreadsheetApp.getActiveSpreadsheet();<br>
+          &nbsp;&nbsp;const hIns = ss.getSheetByName("INSERCION");<br>
+          &nbsp;&nbsp;const hPart = ss.getSheetByName("PARTICIPANTES");<br>
+          &nbsp;&nbsp;const hMem = ss.getSheetByName("MEMORIA_DATOS");<br>
+          &nbsp;&nbsp;if (!hIns || !hPart) return;<br>
+          &nbsp;&nbsp;const totalPart = hPart.getLastRow() - 1;<br>
+          &nbsp;&nbsp;const inserciones = hIns.getLastRow() - 1;<br>
+          &nbsp;&nbsp;const pct = totalPart > 0 ? ((inserciones/totalPart)*100).toFixed(1) : "0";<br>
+          &nbsp;&nbsp;hMem.appendRow(["TOTAL_INSERCIONES", inserciones, new Date()]);<br>
+          &nbsp;&nbsp;hMem.appendRow(["PCT_INSERCION", pct + "%", new Date()]);<br>
+          <span class="m-label">}</span><br><br>
+          <span class="m-sep">// Bloque 4: Conclusiones institucionales automáticas</span><br>
+          <span class="m-label">function generarConclusiones() {</span><br>
+          &nbsp;&nbsp;const ss = SpreadsheetApp.getActiveSpreadsheet();<br>
+          &nbsp;&nbsp;const hMem = ss.getSheetByName("MEMORIA_DATOS");<br>
+          &nbsp;&nbsp;if (!hMem) return;<br>
+          &nbsp;&nbsp;const datos = {};<br>
+          &nbsp;&nbsp;hMem.getDataRange().getValues().slice(1).forEach(r => { datos[r[0]] = r[1]; });<br>
+          &nbsp;&nbsp;const texto = `El presente MIS ha alcanzado un total de ${datos.TOTAL_ACTUACIONES||0} ` +<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;`actuaciones con ${datos.HORAS_TOTALES||0} horas de intervención directa. ` +<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;`Se ha logrado una tasa de inserción del ${datos.PCT_INSERCION||'0%'}, ` +<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;`con un impacto documentado en ${datos.IMPACTO_VECINAL||0} actuaciones ` +<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;`de mejora urbana en la zona ERACIS+ de Jaén.`;<br>
+          &nbsp;&nbsp;hMem.appendRow(["CONCLUSIONES_AUTO", texto, new Date()]);<br>
+          <span class="m-label">}</span><br><br>
+          <span class="m-sep">// Función maestra: genera la memoria completa</span><br>
+          <span class="m-label">function generarMemoriaCompleta() {</span><br>
+          &nbsp;&nbsp;generarResumenActuaciones();<br>
+          &nbsp;&nbsp;generarResumenResultados();<br>
+          &nbsp;&nbsp;generarResumenInsercion();<br>
+          &nbsp;&nbsp;generarConclusiones();<br>
+          &nbsp;&nbsp;exportarMemoriaAGoogleDocs();<br>
+          <span class="m-label">}</span><br><br>
+          <span class="m-sep">// Exportación a Google Docs + PDF</span><br>
+          <span class="m-label">function exportarMemoriaAGoogleDocs() {</span><br>
+          &nbsp;&nbsp;const ss = SpreadsheetApp.getActiveSpreadsheet();<br>
+          &nbsp;&nbsp;const hMem = ss.getSheetByName("MEMORIA_DATOS");<br>
+          &nbsp;&nbsp;const datos = {};<br>
+          &nbsp;&nbsp;hMem.getDataRange().getValues().slice(1).forEach(r => { datos[r[0]] = r[1]; });<br>
+          &nbsp;&nbsp;// Reemplaza {{CAMPO}} en la plantilla de Google Docs<br>
+          &nbsp;&nbsp;const templateId = "PEGA_AQUI_ID_DE_TU_PLANTILLA_GOOGLE_DOCS";<br>
+          &nbsp;&nbsp;const template = DriveApp.getFileById(templateId);<br>
+          &nbsp;&nbsp;const copia = template.makeCopy(`Memoria_MIS_${datos.ID_MIS||'001'}_${new Date().toISOString().slice(0,10)}`);<br>
+          &nbsp;&nbsp;const doc = DocumentApp.openById(copia.getId());<br>
+          &nbsp;&nbsp;const body = doc.getBody();<br>
+          &nbsp;&nbsp;Object.keys(datos).forEach(key => { body.replaceText(`{{${key}}}`, String(datos[key])); });<br>
+          &nbsp;&nbsp;doc.saveAndClose();<br>
+          &nbsp;&nbsp;// Exportar como PDF<br>
+          &nbsp;&nbsp;const pdf = DriveApp.getFileById(copia.getId()).getAs('application/pdf');<br>
+          &nbsp;&nbsp;DriveApp.createFile(pdf).setName(`MEMORIA_${datos.ID_MIS||'001'}.pdf`);<br>
+          <span class="m-label">}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: CERTIFICADOS ══════════════ -->
+<div class="page" id="page-certificados">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Acreditación de competencias</p>
+        <h1 class="page-title">Certificados</h1>
+        <p class="page-desc">Informes técnicos de competencias adquiridas. No son certificados oficiales — son documentos de apoyo al equipo técnico ERACIS+.</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" onclick="generarCertificados()">📜 Generar todos</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" id="certificados-lista">
+      <p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:1.5rem">Genera los certificados con el botón superior. Requiere tener competencias calculadas.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: ALERTAS ══════════════ -->
+<div class="page" id="page-alertas">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Sistema de vigilancia</p>
+        <h1 class="page-title">Alertas del sistema</h1>
+        <p class="page-desc">MISIA detecta automáticamente situaciones que requieren intervención del formador</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost btn-sm" onclick="resolverTodasAlertas()">✅ Marcar todas resueltas</button>
+        <button class="btn btn-danger" onclick="detectarAlertas()">🔍 Detectar ahora</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:1rem">
+    <div class="metric-card red"><div class="metric-val" id="a-criticas">0</div><div class="metric-label">Críticas</div></div>
+    <div class="metric-card gold"><div class="metric-val" id="a-advertencias">0</div><div class="metric-label">Advertencias</div></div>
+    <div class="metric-card green"><div class="metric-val" id="a-resueltas">0</div><div class="metric-label">Resueltas</div></div>
+  </div>
+
+  <div class="alerts-list" id="alertas-list">
+    <p style="color:var(--gray-mid);font-size:.85rem;padding:1rem">Pulsa "Detectar ahora" para analizar el sistema</p>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: EMBLEMA ══════════════ -->
+<div class="page" id="page-emblema">
+  <div class="page-header">
+    <div class="page-header-top">
+      <div>
+        <p class="page-eyebrow">Reconocimiento</p>
+        <h1 class="page-title">Actuación Emblema™</h1>
+        <p class="page-desc">Las 3 actuaciones más relevantes del MIS, calculadas automáticamente por impacto, innovación y resultado formativo</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-gold" onclick="calcularEmblemas()">🏆 Calcular Top 3</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="emblema-podium" id="emblema-podium">
+    <div class="emblema-card plata" style="opacity:.4">
+      <div class="emblema-bg-num">2</div>
+      <div class="emblema-crown">🥈</div>
+      <p class="emblema-pos">Plata</p>
+      <p class="emblema-nombre">Sin datos</p>
+      <div class="emblema-score">—</div>
+    </div>
+    <div class="emblema-card oro" style="opacity:.4">
+      <div class="emblema-bg-num">1</div>
+      <div class="emblema-crown">🥇</div>
+      <p class="emblema-pos">Oro · Mejor actuación</p>
+      <p class="emblema-nombre">Sin datos</p>
+      <div class="emblema-score">—</div>
+    </div>
+    <div class="emblema-card bronce" style="opacity:.4">
+      <div class="emblema-bg-num">3</div>
+      <div class="emblema-crown">🥉</div>
+      <p class="emblema-pos">Bronce</p>
+      <p class="emblema-nombre">Sin datos</p>
+      <div class="emblema-score">—</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.25rem">
+    <div class="card-header"><span class="card-title">Todas las actuaciones puntuadas</span></div>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Actuación</th><th>Impacto</th><th>Innovación</th><th>Resultado formativo</th><th>Puntuación total</th><th>Posición</th></tr>
+          </thead>
+          <tbody id="emblema-tabla">
+            <tr><td colspan="6" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Pulsa "Calcular Top 3" para ver los resultados</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: CONFIGURACIÓN ══════════════ -->
+<div class="page" id="page-config">
+  <div class="page-header">
+    <p class="page-eyebrow">Sistema</p>
+    <h1 class="page-title">Configuración del MIS</h1>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">⚙️ Parámetros del MIS activo</span></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">ID del MIS <span>*</span></label>
+          <input class="form-input" id="cfg-id-mis" placeholder="MIS-001" value="MIS-001">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Fecha inicio</label>
+            <input class="form-input" type="date" id="cfg-fecha-inicio">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha fin</label>
+            <input class="form-input" type="date" id="cfg-fecha-fin">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Formador/a responsable</label>
+          <input class="form-input" id="cfg-formador" placeholder="Nombre del formador">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zona de intervención</label>
+          <input class="form-input" id="cfg-zona" placeholder="Zona ERACIS+ Jaén" value="Zona ERACIS+ Jaén capital">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado del MIS</label>
+          <select class="form-select" id="cfg-estado">
+            <option>ACTIVO</option>
+            <option>PLANIFICACIÓN</option>
+            <option>SUSPENDIDO</option>
+            <option>FINALIZADO</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="guardarConfig()">💾 Guardar configuración</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">🎯 Ponderaciones Índice MISIA™</span></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">📚 Competencias técnicas: <strong id="lbl-comp">40%</strong></label>
+          <input type="range" class="form-input" min="0" max="100" value="40" style="padding:0" oninput="actualizarPonderacion('comp',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">✅ Asistencia: <strong id="lbl-asist">20%</strong></label>
+          <input type="range" class="form-input" min="0" max="100" value="20" style="padding:0" oninput="actualizarPonderacion('asist',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🤝 Actitud: <strong id="lbl-actitud">15%</strong></label>
+          <input type="range" class="form-input" min="0" max="100" value="15" style="padding:0" oninput="actualizarPonderacion('actitud',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">💼 Inserción: <strong id="lbl-ins">15%</strong></label>
+          <input type="range" class="form-input" min="0" max="100" value="15" style="padding:0" oninput="actualizarPonderacion('ins',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🌍 Impacto: <strong id="lbl-imp">10%</strong></label>
+          <input type="range" class="form-input" min="0" max="100" value="10" style="padding:0" oninput="actualizarPonderacion('imp',this.value)">
+        </div>
+        <div class="alert alert-blue" id="alerta-ponderacion" style="display:none">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-text"><strong>Las ponderaciones no suman 100%</strong>Ajústalas para que sumen exactamente 100.</div>
+        </div>
+        <button class="btn btn-primary" onclick="guardarPonderaciones()">💾 Guardar ponderaciones</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-header"><span class="card-title">🗄️ Datos del sistema</span></div>
+    <div class="card-body">
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="exportarDatos()">📤 Exportar JSON</button>
+        <button class="btn btn-ghost" onclick="importarDatos()">📥 Importar datos</button>
+        <button class="btn btn-ghost" onclick="verEstadoSistema()">🔍 Estado del sistema</button>
+        <button class="btn btn-danger" onclick="resetearSistema()">🗑️ Limpiar todo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main><!-- fin .main -->
+</div><!-- fin .app-shell -->
+
+<!-- ═══ MODALES ═══ -->
+
+<!-- Modal: Nuevo participante -->
+<div class="modal-overlay" id="modal-participante">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">👤 Nuevo participante</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-participante')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Nombre <span>*</span></label>
+        <input class="form-input" id="p-nombre" placeholder="Nombre">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Apellidos <span>*</span></label>
+        <input class="form-input" id="p-apellidos" placeholder="Apellidos">
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">DNI/NIE</label>
+        <input class="form-input" id="p-dni" placeholder="00000000X">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input class="form-input" id="p-tel" placeholder="600 000 000">
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-select" id="p-estado">
+          <option>ACTIVO</option><option>BAJA</option><option>PENDIENTE</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nivel de riesgo</label>
+        <select class="form-select" id="p-riesgo">
+          <option>BAJO</option><option>MEDIO</option><option>ALTO</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observaciones</label>
+      <textarea class="form-textarea" id="p-obs" placeholder="Notas sobre el participante..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal('modal-participante')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarParticipante()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nueva actuación -->
+<div class="modal-overlay" id="modal-actuacion">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">🔨 Nueva actuación</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-actuacion')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de actuación <span>*</span></label>
+      <select class="form-select" id="a-tipo">
+        <option>Albañilería y mantenimiento urbano</option>
+        <option>Reposición de pavimento / baldosas</option>
+        <option>Demolición y saneamiento</option>
+        <option>Jardinería y zonas verdes</option>
+        <option>Pintura y acabados</option>
+        <option>Limpieza y acondicionamiento</option>
+        <option>Replanteo y levantamiento</option>
+        <option>Instalaciones básicas</option>
+        <option>Otro (especificar en observaciones)</option>
+      </select>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Fecha <span>*</span></label>
+        <input class="form-input" type="date" id="a-fecha">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duración (horas)</label>
+        <input class="form-input" type="number" id="a-horas" placeholder="4" min="1" max="8">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Lugar / Calle <span>*</span></label>
+      <input class="form-input" id="a-lugar" placeholder="Calle, zona o punto de intervención">
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-select" id="a-estado">
+          <option>PLANIFICADA</option><option>ACTIVA</option><option>FINALIZADA</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nivel de cierre (1-5)</label>
+        <input class="form-input" type="number" id="a-cierre" placeholder="3" min="1" max="5">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observaciones</label>
+      <textarea class="form-textarea" id="a-obs" placeholder="Descripción detallada, incidencias, materiales usados..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal('modal-actuacion')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarActuacion()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nueva evidencia -->
+<div class="modal-overlay" id="modal-evidencia">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">📸 Añadir evidencia</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-evidencia')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Actuación relacionada</label>
+      <select class="form-select" id="evi-actuacion"></select>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Tipo de evidencia</label>
+        <select class="form-select" id="evi-tipo">
+          <option>FOTO</option><option>VÍDEO</option><option>DOCUMENTO</option><option>PARTE_TRABAJO</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Momento</label>
+        <select class="form-select" id="evi-momento">
+          <option>ANTES</option><option>DURANTE</option><option>DESPUÉS</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">URL de Google Drive</label>
+      <input class="form-input" id="evi-url" placeholder="https://drive.google.com/...">
+      <p class="form-hint">Pega el enlace compartido de la foto o documento en Drive</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observaciones</label>
+      <textarea class="form-textarea" id="evi-obs" placeholder="Descripción de la evidencia..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal('modal-evidencia')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEvidencia()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nueva inserción -->
+<div class="modal-overlay" id="modal-insercion">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">💼 Registrar inserción</h2>
+      <button class="modal-close" onclick="cerrarModal('modal-insercion')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Participante</label>
+      <select class="form-select" id="ins-participante"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de inserción</label>
+      <select class="form-select" id="ins-tipo">
+        <option>CONTRATO_LABORAL</option>
+        <option>FORMACION_REGLADA</option>
+        <option>BUSQUEDA_ACTIVA</option>
+        <option>AUTOEMPLEO</option>
+        <option>PRACTICAS</option>
+      </select>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Empresa / Entidad</label>
+        <input class="form-input" id="ins-empresa" placeholder="Nombre de la empresa">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-input" type="date" id="ins-fecha">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observaciones</label>
+      <textarea class="form-textarea" id="ins-obs" placeholder="Detalles de la inserción..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="cerrarModal('modal-insercion')">Cancelar</button>
+      <button class="btn btn-success" onclick="guardarInsercion()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT — MOTOR MISIA
+═══════════════════════════════════════════════════════ -->
+<script>
+// ─── ESTADO GLOBAL ───
+const DB = {
+  config: {
+    idMIS: 'MIS-001',
+    fechaInicio: '',
+    fechaFin: '',
+    formador: '',
+    zona: 'Zona ERACIS+ Jaén capital',
+    estado: 'ACTIVO'
+  },
+  ponderaciones: { comp: 40, asist: 20, actitud: 15, ins: 15, imp: 10 },
+  participantes: [],
+  actuaciones: [],
+  participacion: [],
+  evidencias: [],
+  competencias: [],
+  inserciones: [],
+  alertas: [],
+  indices: []
+};
+
+// ─── UTILIDADES ───
+const $ = id => document.getElementById(id);
+const hoy = () => new Date().toISOString().slice(0,10);
+const fmtFecha = d => d ? new Date(d).toLocaleDateString('es-ES') : '—';
+const genID = prefix => `${prefix}-${String(Date.now()).slice(-5)}`;
+const colorAvatar = (nombre) => {
+  const colors = ['#1a237e','#283593','#c62828','#2e7d32','#e65100','#00695c','#4527a0','#880e4f'];
+  let h = 0;
+  for (let c of (nombre||'A')) h = ((h<<5)-h)+c.charCodeAt(0)|0;
+  return colors[Math.abs(h)%colors.length];
+};
+
+function toast(msg, tipo='success') {
+  const t = document.createElement('div');
+  t.className = `toast ${tipo}`;
+  t.textContent = msg;
+  $('toast-container').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function guardarLocalStorage() {
+  localStorage.setItem('misia_db', JSON.stringify(DB));
+}
+
+function cargarLocalStorage() {
+  const raw = localStorage.getItem('misia_db');
+  if (!raw) return;
+  try {
+    const saved = JSON.parse(raw);
+    Object.assign(DB, saved);
+  } catch(e){}
+}
+
+// ─── NAVEGACIÓN ───
+function navTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = $(`page-${page}`);
+  if (pg) pg.classList.add('active');
+  const nav = document.querySelector(`[data-page="${page}"]`);
+  if (nav) nav.classList.add('active');
+  window.scrollTo(0,0);
+  if (page === 'dashboard') actualizarDashboard();
+  if (page === 'participantes') renderParticipantes();
+  if (page === 'actuaciones') renderActuaciones();
+  if (page === 'asistencia') renderAsistencia();
+  if (page === 'alertas') renderAlertas();
+  if (page === 'insercion') renderInsercion();
+  if (page === 'evidencias') renderEvidencias();
+  if (page === 'certificados') renderCertificados();
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => navTo(item.dataset.page));
+});
+
+// ─── MODALES ───
+function abrirModal(id) {
+  const m = $(id);
+  if (m) m.classList.add('open');
+}
+function cerrarModal(id) {
+  const m = $(id);
+  if (m) m.classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
+function abrirModalParticipante() { abrirModal('modal-participante'); }
+function abrirModalActuacion() {
+  $('a-fecha').value = hoy();
+  abrirModal('modal-actuacion');
+}
+function abrirModalEvidencia() {
+  const sel = $('evi-actuacion');
+  sel.innerHTML = DB.actuaciones.map(a => `<option value="${a.id}">${a.id} — ${a.tipo}</option>`).join('');
+  abrirModal('modal-evidencia');
+}
+function abrirModalInsercion() {
+  const sel = $('ins-participante');
+  sel.innerHTML = DB.participantes.map(p => `<option value="${p.id}">${p.nombre} ${p.apellidos}</option>`).join('');
+  $('ins-fecha').value = hoy();
+  abrirModal('modal-insercion');
+}
+
+// ─── PARTICIPANTES ───
+function guardarParticipante() {
+  const nombre = $('p-nombre').value.trim();
+  const apellidos = $('p-apellidos').value.trim();
+  if (!nombre || !apellidos) { toast('Nombre y apellidos son obligatorios','error'); return; }
+  const p = {
+    id: genID('PART'),
+    idMIS: DB.config.idMIS,
+    nombre, apellidos,
+    dni: $('p-dni').value.trim(),
+    tel: $('p-tel').value.trim(),
+    estado: $('p-estado').value,
+    riesgo: $('p-riesgo').value,
+    obs: $('p-obs').value.trim(),
+    fechaAlta: hoy()
+  };
+  DB.participantes.push(p);
+  guardarLocalStorage();
+  cerrarModal('modal-participante');
+  // Limpiar
+  ['p-nombre','p-apellidos','p-dni','p-tel','p-obs'].forEach(id => $(id).value='');
+  toast(`Participante ${p.nombre} ${p.apellidos} añadido ✓`);
+  renderParticipantes();
+  actualizarBadges();
+}
+
+function renderParticipantes() {
+  const grid = $('participantes-grid');
+  const filtro = ($('buscar-participante')||{value:''}).value.toLowerCase();
+  const lista = DB.participantes.filter(p =>
+    `${p.nombre} ${p.apellidos} ${p.id}`.toLowerCase().includes(filtro)
+  );
+  if (lista.length === 0) {
+    grid.innerHTML = `<p style="color:var(--gray-mid);font-size:.9rem;padding:2rem;text-align:center;grid-column:1/-1">No hay participantes${filtro?' que coincidan':' registrados'}.</p>`;
+    return;
+  }
+  grid.innerHTML = lista.map(p => {
+    const iniciales = `${p.nombre[0]}${p.apellidos[0]}`.toUpperCase();
+    const col = colorAvatar(p.nombre);
+    const riesgoClass = {ALTO:'badge-red',MEDIO:'badge-gold',BAJO:'badge-green'}[p.riesgo]||'badge-gray';
+    return `
+    <div class="participant-card" onclick="verParticipante('${p.id}')">
+      <div class="participant-avatar" style="background:${col}">${iniciales}</div>
+      <div class="participant-name">${p.nombre} ${p.apellidos}</div>
+      <div class="participant-id">${p.id} · Alta ${fmtFecha(p.fechaAlta)}</div>
+      <div class="participant-stats">
+        <span class="badge ${p.estado==='ACTIVO'?'badge-green':'badge-gray'}">${p.estado}</span>
+        <span class="badge ${riesgoClass}">Riesgo ${p.riesgo}</span>
+      </div>
+    </div>`;
+  }).join('');
+  $('stat-total-part').textContent = DB.participantes.length;
+  $('stat-activos').textContent = DB.participantes.filter(p=>p.estado==='ACTIVO').length;
+  $('stat-riesgo-part').textContent = DB.participantes.filter(p=>p.riesgo==='ALTO').length;
+}
+
+function filtrarParticipantes(v) { renderParticipantes(); }
+
+function verParticipante(id) {
+  const p = DB.participantes.find(x=>x.id===id);
+  if (!p) return;
+  toast(`${p.nombre} ${p.apellidos} — ${p.estado}`, 'success');
+}
+
+// ─── ACTUACIONES ───
+function guardarActuacion() {
+  const tipo = $('a-tipo').value;
+  const fecha = $('a-fecha').value;
+  const lugar = $('a-lugar').value.trim();
+  if (!tipo || !fecha || !lugar) { toast('Tipo, fecha y lugar son obligatorios','error'); return; }
+  const a = {
+    id: genID('ACT'),
+    idMIS: DB.config.idMIS,
+    tipo, fecha, lugar,
+    horas: parseFloat($('a-horas').value)||4,
+    estado: $('a-estado').value,
+    cierre: parseInt($('a-cierre').value)||3,
+    obs: $('a-obs').value.trim()
+  };
+  DB.actuaciones.push(a);
+  guardarLocalStorage();
+  cerrarModal('modal-actuacion');
+  toast(`Actuación "${tipo}" registrada ✓`);
+  renderActuaciones();
+  actualizarBadges();
+}
+
+function renderActuaciones(filtro='todas') {
+  const lista = $('actuaciones-list');
+  let acts = DB.actuaciones;
+  if (filtro !== 'todas') acts = acts.filter(a => a.estado.toLowerCase().includes(filtro));
+  if (acts.length === 0) {
+    lista.innerHTML = `<p style="color:var(--gray-mid);font-size:.9rem;padding:2rem;text-align:center">Sin actuaciones${filtro!=='todas'?' con ese estado':''}</p>`;
+    return;
+  }
+  lista.innerHTML = acts.map(a => {
+    const d = new Date(a.fecha);
+    const mes = d.toLocaleString('es-ES',{month:'short'}).toUpperCase();
+    const estadoClass = {PLANIFICADA:'badge-blue',ACTIVA:'badge-gold',FINALIZADA:'badge-green'}[a.estado]||'badge-gray';
+    const partic = DB.participacion.filter(p=>p.idActuacion===a.id).length;
+    return `
+    <div class="actuacion-item">
+      <div class="actuacion-date">
+        <div class="actuacion-date-day">${d.getDate()}</div>
+        <div class="actuacion-date-mon">${mes}</div>
+      </div>
+      <div class="actuacion-main">
+        <h4>${a.tipo}</h4>
+        <p>📍 ${a.lugar} · ⏱ ${a.horas}h · 👥 ${partic} participantes</p>
+        <div class="actuacion-meta">
+          <span class="badge ${estadoClass}">${a.estado}</span>
+          <span class="badge badge-gray">${a.id}</span>
+          ${a.obs ? `<span class="badge badge-indigo">Con notas</span>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="btn btn-ghost btn-sm" onclick="verActuacion('${a.id}')">👁 Ver</button>
+        <button class="btn btn-ghost btn-sm" onclick="pasarListaActuacion('${a.id}')">✅ Lista</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filtrarActuaciones(f) { renderActuaciones(f); }
+function verActuacion(id) { toast(`Actuación ${id} — modo edición próximamente`,'success'); }
+function pasarListaActuacion(id) {
+  $('sel-actuacion-asist').value = id;
+  navTo('asistencia');
+}
+
+// ─── ASISTENCIA ───
+function renderAsistencia() {
+  const sel = $('sel-actuacion-asist');
+  sel.innerHTML = '<option value="">Seleccionar actuación...</option>' +
+    DB.actuaciones.map(a => `<option value="${a.id}">${a.id} — ${a.tipo} (${fmtFecha(a.fecha)})</option>`).join('');
+  sel.onchange = () => cargarListaAsistencia(sel.value);
+}
+
+function cargarListaAsistencia(idAct) {
+  const container = $('lista-asistencia');
+  if (!idAct) {
+    container.innerHTML = '<p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:1rem">Selecciona una actuación</p>';
+    return;
+  }
+  const act = DB.actuaciones.find(a=>a.id===idAct);
+  $('asist-titulo').textContent = act ? `${act.tipo} — ${fmtFecha(act.fecha)}` : idAct;
+
+  if (DB.participantes.length === 0) {
+    container.innerHTML = '<p style="color:var(--gray-mid);font-size:.85rem;padding:1rem">No hay participantes registrados</p>';
+    return;
+  }
+
+  container.innerHTML = `
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem">
+    ${DB.participantes.filter(p=>p.estado==='ACTIVO').map(p => {
+      const reg = DB.participacion.find(r=>r.idActuacion===idAct && r.idParticipante===p.id);
+      const asist = reg ? reg.asistencia : 'SI';
+      const rol = reg ? reg.rol : 'participante';
+      const actitud = reg ? reg.actitud : 3;
+      return `
+      <div class="card" style="padding:.85rem" id="asist-card-${p.id}">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem">
+          <div class="participant-avatar" style="background:${colorAvatar(p.nombre)};width:32px;height:32px;font-size:.75rem">${p.nombre[0]}${p.apellidos[0]}</div>
+          <div>
+            <div style="font-size:.83rem;font-weight:700">${p.nombre} ${p.apellidos}</div>
+            <div style="font-size:.72rem;color:var(--gray-mid)">${p.id}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem;margin-bottom:.5rem">
+          <button class="btn btn-sm ${asist==='SI'?'btn-success':'btn-ghost'}" onclick="toggleAsistencia('${idAct}','${p.id}','SI',this)" style="flex:1">✅ Presente</button>
+          <button class="btn btn-sm ${asist==='NO'?'btn-danger':'btn-ghost'}" onclick="toggleAsistencia('${idAct}','${p.id}','NO',this)" style="flex:1">❌ Ausente</button>
+        </div>
+        <select class="form-select" style="font-size:.78rem;margin-bottom:.4rem" id="rol-${p.id}-${idAct}" onchange="actualizarRol('${idAct}','${p.id}',this.value)">
+          ${['participante','colocación','demolición','limpieza','replanteo','supervisión','jardinería','jefe de equipo','materiales']
+            .map(r=>`<option ${r===rol?'selected':''}>${r}</option>`).join('')}
+        </select>
+        <div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem">
+          <span style="color:var(--gray-mid)">Actitud:</span>
+          ${[1,2,3,4,5].map(n=>`<span style="cursor:pointer;font-size:1rem;opacity:${n<=actitud?1:.3}" onclick="setActitud('${idAct}','${p.id}',${n},this.parentElement)">⭐</span>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function toggleAsistencia(idAct, idPart, valor, btn) {
+  let reg = DB.participacion.find(r=>r.idActuacion===idAct && r.idParticipante===idPart);
+  if (!reg) {
+    reg = { idActuacion:idAct, idParticipante:idPart, rol:'participante', asistencia:valor, actitud:3 };
+    DB.participacion.push(reg);
+  } else {
+    reg.asistencia = valor;
+  }
+  // Refrescar botones del card
+  const card = document.getElementById(`asist-card-${idPart}`);
+  if (card) {
+    const btns = card.querySelectorAll('button');
+    btns[0].className = `btn btn-sm ${valor==='SI'?'btn-success':'btn-ghost'}`;
+    btns[1].className = `btn btn-sm ${valor==='NO'?'btn-danger':'btn-ghost'}`;
+  }
+}
+
+function actualizarRol(idAct, idPart, rol) {
+  let reg = DB.participacion.find(r=>r.idActuacion===idAct && r.idParticipante===idPart);
+  if (reg) reg.rol = rol;
+}
+
+function setActitud(idAct, idPart, valor, container) {
+  let reg = DB.participacion.find(r=>r.idActuacion===idAct && r.idParticipante===idPart);
+  if (!reg) { reg = {idActuacion:idAct,idParticipante:idPart,rol:'participante',asistencia:'SI',actitud:valor}; DB.participacion.push(reg); }
+  else reg.actitud = valor;
+  container.querySelectorAll('span').forEach((s,i)=>s.style.opacity=i<valor?'1':'.3');
+}
+
+function marcarTodos(val) {
+  const idAct = $('sel-actuacion-asist').value;
+  if (!idAct) return;
+  DB.participantes.filter(p=>p.estado==='ACTIVO').forEach(p => {
+    toggleAsistencia(idAct, p.id, val.toUpperCase(), null);
+  });
+  cargarListaAsistencia(idAct);
+}
+
+function guardarAsistencia() {
+  guardarLocalStorage();
+  toast('Asistencia guardada correctamente ✓');
+}
+
+// ─── COMPETENCIAS ───
+function calcularCompetencias() {
+  DB.competencias = [];
+  const rolesMap = {
+    'colocación':     { hacer:1, saber:.5 },
+    'demolición':     { hacer:.5, ser:.5 },
+    'limpieza':       { ser:1 },
+    'albañilería':    { hacer:1, saber:1 },
+    'replanteo':      { saber:1, decidir:.5 },
+    'supervisión':    { decidir:1, saber:.5 },
+    'jardinería':     { hacer:.8, ser:.5 },
+    'mantenimiento':  { hacer:.8, saber:.5 },
+    'jefe de equipo': { decidir:1, ser:.5 },
+    'materiales':     { saber:.5, ser:.5 }
+  };
+
+  DB.participantes.forEach(p => {
+    const regs = DB.participacion.filter(r => r.idParticipante === p.id && r.asistencia === 'SI');
+    const comp = { saber:2, hacer:2, ser:2, decidir:2 };
+    regs.forEach(r => {
+      const pts = rolesMap[r.rol] || { ser:.3 };
+      Object.keys(pts).forEach(k => comp[k] = Math.min(10, comp[k]+pts[k]));
+      if ((r.actitud||3) >= 4) comp.ser = Math.min(10, comp.ser+.2);
+    });
+    const media = ((comp.saber+comp.hacer+comp.ser+comp.decidir)/4).toFixed(2);
+    DB.competencias.push({ idParticipante:p.id, nombre:`${p.nombre} ${p.apellidos}`, ...comp, media });
+  });
+
+  guardarLocalStorage();
+  renderCompetencias();
+  toast(`Competencias calculadas para ${DB.competencias.length} participantes ✓`);
+}
+
+function renderCompetencias() {
+  const tbody = $('competencias-tbody');
+  if (DB.competencias.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Sin competencias calculadas</td></tr>';
+    return;
+  }
+  tbody.innerHTML = DB.competencias.map(c => {
+    const m = parseFloat(c.media);
+    const cls = m>=7?'badge-green':m>=5?'badge-gold':'badge-red';
+    const nivel = m>=7?'AVANZADO':m>=5?'BÁSICO':'INICIAL';
+    const bar = (v, max=10, color='var(--blue)') =>
+      `<div style="height:6px;background:var(--gray-brd);border-radius:3px;margin-top:3px">
+        <div style="width:${(v/max)*100}%;height:100%;background:${color};border-radius:3px"></div>
+      </div>`;
+    return `
+    <tr>
+      <td style="font-weight:600;color:var(--text)">${c.nombre}</td>
+      <td>${parseFloat(c.saber).toFixed(1)}/10 ${bar(c.saber,'var(--blue)')}</td>
+      <td>${parseFloat(c.hacer).toFixed(1)}/10 ${bar(c.hacer,'var(--green)')}</td>
+      <td>${parseFloat(c.ser).toFixed(1)}/10 ${bar(c.ser,'var(--gold)')}</td>
+      <td>${parseFloat(c.decidir).toFixed(1)}/10 ${bar(c.decidir,'var(--indigo)')}</td>
+      <td style="font-weight:700;color:var(--text)">${m.toFixed(2)}</td>
+      <td><span class="badge ${cls}">${nivel}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── ÍNDICE MISIA ───
+function calcularIndices() {
+  if (DB.competencias.length === 0) calcularCompetencias();
+  const p = DB.ponderaciones;
+  const mapaAsist = {};
+  DB.participacion.forEach(r => {
+    if (!mapaAsist[r.idParticipante]) mapaAsist[r.idParticipante] = {total:0,pres:0};
+    mapaAsist[r.idParticipante].total++;
+    if (r.asistencia==='SI') mapaAsist[r.idParticipante].pres++;
+  });
+  const inserts = new Set(DB.inserciones.map(i=>i.idParticipante));
+
+  DB.indices = DB.competencias.map(c => {
+    const pComp = (parseFloat(c.media)/10)*100;
+    const a = mapaAsist[c.idParticipante]||{total:1,pres:1};
+    const pAsist = (a.pres/a.total)*100;
+    const regsActitud = DB.participacion.filter(r=>r.idParticipante===c.idParticipante && r.actitud);
+    const avgActitud = regsActitud.length ? regsActitud.reduce((s,r)=>s+(r.actitud||3),0)/regsActitud.length : 3;
+    const pActitud = ((avgActitud-1)/4)*100;
+    const pIns = inserts.has(c.idParticipante) ? 100 : 0;
+    const pImp = DB.actuaciones.length > 0 ? 50 : 0; // base 50 si hay actuaciones
+
+    const indice = (pComp*(p.comp/100)) + (pAsist*(p.asist/100)) + (pActitud*(p.actitud/100)) + (pIns*(p.ins/100)) + (pImp*(p.imp/100));
+
+    const nivel = indice>=90?'ACTUACIÓN DESTACADA':indice>=75?'BUEN DESEMPEÑO':indice>=50?'EVOLUCIÓN ADECUADA':indice>=25?'RIESGO MEDIO':'RIESGO ALTO';
+    const color = indice>=90?'#1a237e':indice>=75?'var(--green)':indice>=50?'var(--gold)':indice>=25?'var(--amber)':'var(--red)';
+    return { idParticipante:c.idParticipante, nombre:c.nombre, indice: Math.round(indice), nivel, color, pComp, pAsist, pActitud, pIns };
+  });
+
+  guardarLocalStorage();
+  renderIndices();
+  toast(`Índice MISIA™ calculado para ${DB.indices.length} participantes ✓`);
+}
+
+function renderIndices() {
+  const grid = $('indices-grid');
+  if (DB.indices.length === 0) {
+    grid.innerHTML = '<p style="color:var(--gray-mid);font-size:.9rem;padding:2rem;text-align:center;grid-column:1/-1">Sin índices calculados</p>';
+    return;
+  }
+  const sorted = [...DB.indices].sort((a,b)=>b.indice-a.indice);
+  grid.innerHTML = sorted.map(idx => {
+    const r = 45;
+    const circ = 2*Math.PI*r;
+    const filled = (idx.indice/100)*circ;
+    return `
+    <div class="participant-card" style="text-align:center">
+      <div class="indice-ring-wrap">
+        <div class="indice-ring">
+          <svg width="120" height="120" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--gray-brd)" stroke-width="7"/>
+            <circle cx="50" cy="50" r="${r}" fill="none" stroke="${idx.color}" stroke-width="7"
+              stroke-dasharray="${filled} ${circ}" stroke-linecap="round"/>
+          </svg>
+          <div class="indice-ring-val">${idx.indice}<span class="indice-ring-sub">/ 100</span></div>
+        </div>
+        <span class="indice-nivel" style="background:${idx.color}22;color:${idx.color}">${idx.nivel}</span>
+      </div>
+      <div class="participant-name" style="margin-top:.75rem">${idx.nombre}</div>
+      <div style="font-size:.75rem;color:var(--gray-mid);margin-top:.25rem">${idx.idParticipante}</div>
+      <div style="margin-top:.75rem;font-size:.75rem;color:var(--text-mid)">
+        📚 ${Math.round(idx.pComp)}% · ✅ ${Math.round(idx.pAsist)}% · 🤝 ${Math.round(idx.pActitud)}% · 💼 ${Math.round(idx.pIns)}%
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── ALERTAS ───
+function detectarAlertas() {
+  DB.alertas = [];
+  // Absentismo
+  const mapaAsist = {};
+  DB.participacion.forEach(r => {
+    if (!mapaAsist[r.idParticipante]) mapaAsist[r.idParticipante]={total:0,aus:0};
+    mapaAsist[r.idParticipante].total++;
+    if (r.asistencia==='NO') mapaAsist[r.idParticipante].aus++;
+  });
+  Object.entries(mapaAsist).forEach(([id,a]) => {
+    if (a.total < 1) return;
+    const pct = (a.aus/a.total)*100;
+    if (pct > 30) {
+      const p = DB.participantes.find(x=>x.id===id);
+      DB.alertas.push({
+        tipo: 'ABSENTISMO', nivel: pct>50?'critico':'advertencia',
+        texto: `${p?p.nombre+' '+p.apellidos:id}: ${pct.toFixed(0)}% de ausencias`,
+        resuelta: false
+      });
+    }
+  });
+  // Sin evidencias
+  DB.actuaciones.filter(a=>a.estado==='FINALIZADA').forEach(a => {
+    if (!DB.evidencias.find(e=>e.idActuacion===a.id)) {
+      DB.alertas.push({ tipo:'SIN EVIDENCIAS', nivel:'advertencia', texto:`Actuación ${a.id} finalizada sin evidencias`, resuelta:false });
+    }
+  });
+  // Índice bajo
+  DB.indices.filter(i=>i.indice<25).forEach(i => {
+    DB.alertas.push({ tipo:'RIESGO ALTO', nivel:'critico', texto:`${i.nombre}: Índice MISIA ${i.indice}/100`, resuelta:false });
+  });
+
+  guardarLocalStorage();
+  renderAlertas();
+  toast(`${DB.alertas.length} alertas detectadas`);
+  actualizarBadges();
+}
+
+function renderAlertas() {
+  const lista = $('alertas-list');
+  $('a-criticas').textContent = DB.alertas.filter(a=>a.nivel==='critico'&&!a.resuelta).length;
+  $('a-advertencias').textContent = DB.alertas.filter(a=>a.nivel==='advertencia'&&!a.resuelta).length;
+  $('a-resueltas').textContent = DB.alertas.filter(a=>a.resuelta).length;
+
+  if (DB.alertas.length === 0) {
+    lista.innerHTML = '<div class="alert alert-green"><span class="alert-icon">✅</span><div class="alert-text"><strong>Sin alertas</strong>El sistema no ha detectado situaciones que requieran intervención.</div></div>';
+    return;
+  }
+  lista.innerHTML = DB.alertas.map((a,i) => `
+  <div class="alert-item ${a.resuelta?'info':a.nivel}" style="${a.resuelta?'opacity:.5':''}">
+    <div class="alert-dot"></div>
+    <div style="flex:1">
+      <div class="alert-item-text"><strong>${a.tipo}</strong>${a.texto}</div>
+    </div>
+    ${!a.resuelta ? `<button class="btn btn-ghost btn-sm" onclick="resolverAlerta(${i})">✓ Resolver</button>` : '<span style="font-size:.72rem;color:var(--gray-mid)">Resuelta</span>'}
+  </div>`).join('');
+}
+
+function resolverAlerta(i) { DB.alertas[i].resuelta=true; guardarLocalStorage(); renderAlertas(); actualizarBadges(); }
+function resolverTodasAlertas() { DB.alertas.forEach(a=>a.resuelta=true); guardarLocalStorage(); renderAlertas(); actualizarBadges(); }
+
+// ─── INSERCIÓN ───
+function guardarInsercion() {
+  const idPart = $('ins-participante').value;
+  if (!idPart) { toast('Selecciona un participante','error'); return; }
+  DB.inserciones.push({
+    id: genID('INS'),
+    idParticipante: idPart,
+    tipo: $('ins-tipo').value,
+    empresa: $('ins-empresa').value.trim(),
+    fecha: $('ins-fecha').value,
+    obs: $('ins-obs').value.trim()
+  });
+  guardarLocalStorage();
+  cerrarModal('modal-insercion');
+  toast('Inserción registrada ✓');
+  renderInsercion();
+}
+
+function renderInsercion() {
+  $('ins-contratos').textContent = DB.inserciones.filter(i=>i.tipo.includes('CONTRATO')).length;
+  $('ins-formacion').textContent = DB.inserciones.filter(i=>i.tipo.includes('FORMAC')).length;
+  $('ins-busqueda').textContent = DB.inserciones.filter(i=>i.tipo.includes('BUSQUEDA')).length;
+  const tbody = $('insercion-tbody');
+  if (DB.inserciones.length===0) {
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Sin inserciones registradas</td></tr>';
+    return;
+  }
+  tbody.innerHTML = DB.inserciones.map(i => {
+    const p = DB.participantes.find(x=>x.id===i.idParticipante);
+    const tipoCls = i.tipo.includes('CONTRATO')?'badge-green':i.tipo.includes('FORMAC')?'badge-blue':'badge-gold';
+    return `<tr>
+      <td style="font-weight:600">${p?p.nombre+' '+p.apellidos:i.idParticipante}</td>
+      <td><span class="badge ${tipoCls}">${i.tipo.replace('_',' ')}</span></td>
+      <td>${i.empresa||'—'}</td>
+      <td>${fmtFecha(i.fecha)}</td>
+      <td><span class="badge badge-green">Activa</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── EVIDENCIAS ───
+function guardarEvidencia() {
+  const idAct = $('evi-actuacion').value;
+  if (!idAct) { toast('Selecciona una actuación','error'); return; }
+  DB.evidencias.push({
+    id: genID('EVI'),
+    idActuacion: idAct,
+    tipo: $('evi-tipo').value,
+    momento: $('evi-momento').value,
+    url: $('evi-url').value.trim(),
+    obs: $('evi-obs').value.trim(),
+    fecha: hoy()
+  });
+  guardarLocalStorage();
+  cerrarModal('modal-evidencia');
+  toast('Evidencia registrada ✓');
+  renderEvidencias();
+}
+
+function renderEvidencias() {
+  $('evi-antes').textContent = DB.evidencias.filter(e=>e.momento==='ANTES').length;
+  $('evi-durante').textContent = DB.evidencias.filter(e=>e.momento==='DURANTE').length;
+  $('evi-despues').textContent = DB.evidencias.filter(e=>e.momento==='DESPUÉS').length;
+  const tbody = $('evidencias-tbody');
+  if (DB.evidencias.length===0) {
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gray-mid);padding:1.5rem">Sin evidencias</td></tr>';
+    return;
+  }
+  tbody.innerHTML = DB.evidencias.map(e => {
+    const a = DB.actuaciones.find(x=>x.id===e.idActuacion);
+    return `<tr>
+      <td>${a?a.tipo:e.idActuacion}</td>
+      <td><span class="badge badge-blue">${e.tipo}</span></td>
+      <td><span class="badge ${e.momento==='ANTES'?'badge-blue':e.momento==='DURANTE'?'badge-gold':'badge-green'}">${e.momento}</span></td>
+      <td>${e.url?`<a href="${e.url}" target="_blank" style="color:var(--blue)">🔗 Ver</a>`:'—'}</td>
+      <td>${fmtFecha(e.fecha)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── MEMORY ENGINE ───
+function generarMemoria() {
+  const datos = {
+    ID_MIS:            DB.config.idMIS,
+    FORMADOR:          DB.config.formador || 'No especificado',
+    ZONA:              DB.config.zona,
+    FECHA_INICIO:      fmtFecha(DB.config.fechaInicio),
+    FECHA_FIN:         fmtFecha(DB.config.fechaFin),
+    ESTADO:            DB.config.estado,
+    TOTAL_PARTICIPANTES: DB.participantes.length,
+    PARTICIPANTES_ACTIVOS: DB.participantes.filter(p=>p.estado==='ACTIVO').length,
+    TOTAL_ACTUACIONES: DB.actuaciones.length,
+    ACTUACIONES_FINALIZADAS: DB.actuaciones.filter(a=>a.estado==='FINALIZADA').length,
+    TOTAL_HORAS:       DB.actuaciones.reduce((s,a)=>s+(parseFloat(a.horas)||0),0).toFixed(1),
+    TOTAL_EVIDENCIAS:  DB.evidencias.length,
+    TOTAL_INSERCIONES: DB.inserciones.length,
+    PCT_INSERCION:     DB.participantes.length>0 ? ((DB.inserciones.length/DB.participantes.length)*100).toFixed(1)+'%' : '0%',
+    INDICE_MEDIO:      DB.indices.length>0 ? (DB.indices.reduce((s,i)=>s+i.indice,0)/DB.indices.length).toFixed(1) : 'Sin calcular',
+    ALERTAS_PENDIENTES: DB.alertas.filter(a=>!a.resuelta).length,
+    FECHA_GENERACION:  new Date().toLocaleDateString('es-ES')
+  };
+
+  // Vista previa HTML
+  $('memoria-preview').innerHTML = `
+  <h1>MEMORIA TÉCNICA — ${datos.ID_MIS}</h1>
+  <p class="doc-meta">Programa ERACIS+ Jaén · ${datos.ZONA}<br>
+  Generada el ${datos.FECHA_GENERACION}</p>
+
+  <h2>1. Identificación del MIS</h2>
+  <table><tbody>
+    <tr><td><strong>Identificador</strong></td><td>${datos.ID_MIS}</td></tr>
+    <tr><td><strong>Formador/a</strong></td><td>${datos.FORMADOR}</td></tr>
+    <tr><td><strong>Período</strong></td><td>${datos.FECHA_INICIO} — ${datos.FECHA_FIN}</td></tr>
+    <tr><td><strong>Estado</strong></td><td>${datos.ESTADO}</td></tr>
+    <tr><td><strong>Zona</strong></td><td>${datos.ZONA}</td></tr>
+  </tbody></table>
+
+  <h2>2. Participantes</h2>
+  <p>El presente MIS ha contado con <strong>${datos.TOTAL_PARTICIPANTES} participantes registrados</strong>,
+  de los cuales <strong>${datos.PARTICIPANTES_ACTIVOS}</strong> se encuentran activos al momento de la generación de esta memoria.</p>
+  ${DB.participantes.length>0?`
+  <table><thead><tr><th>Participante</th><th>Estado</th><th>Riesgo</th><th>Alta</th></tr></thead><tbody>
+  ${DB.participantes.slice(0,10).map(p=>`<tr><td>${p.nombre} ${p.apellidos}</td><td>${p.estado}</td><td>${p.riesgo}</td><td>${fmtFecha(p.fechaAlta)}</td></tr>`).join('')}
+  ${DB.participantes.length>10?`<tr><td colspan="4" style="text-align:center;color:var(--gray-mid)">... y ${DB.participantes.length-10} más</td></tr>`:''}
+  </tbody></table>`:''} 
+
+  <h2>3. Actuaciones realizadas</h2>
+  <p>Se han registrado <strong>${datos.TOTAL_ACTUACIONES} actuaciones</strong> con un total de
+  <strong>${datos.TOTAL_HORAS} horas</strong> de intervención directa en la zona ERACIS+ de Jaén.
+  De ellas, <strong>${datos.ACTUACIONES_FINALIZADAS}</strong> han sido completadas satisfactoriamente.</p>
+  ${DB.actuaciones.length>0?`
+  <table><thead><tr><th>ID</th><th>Tipo</th><th>Lugar</th><th>Fecha</th><th>Horas</th><th>Estado</th></tr></thead><tbody>
+  ${DB.actuaciones.map(a=>`<tr><td>${a.id}</td><td>${a.tipo}</td><td>${a.lugar}</td><td>${fmtFecha(a.fecha)}</td><td>${a.horas}h</td><td>${a.estado}</td></tr>`).join('')}
+  </tbody></table>`:''}
+
+  <h2>4. Evaluación competencial</h2>
+  <p>El Índice MISIA™ medio del grupo es de <strong>${datos.INDICE_MEDIO} puntos sobre 100</strong>.
+  Se han evaluado las cuatro dimensiones competenciales: Saber (conocimiento teórico), Saber Hacer (habilidades técnicas), Saber Ser (actitud profesional) y Saber Decidir (autonomía).</p>
+  ${DB.competencias.length>0?`
+  <table><thead><tr><th>Participante</th><th>Saber</th><th>Saber Hacer</th><th>Saber Ser</th><th>Saber Decidir</th><th>Media</th></tr></thead><tbody>
+  ${DB.competencias.map(c=>`<tr><td>${c.nombre}</td><td>${parseFloat(c.saber).toFixed(1)}</td><td>${parseFloat(c.hacer).toFixed(1)}</td><td>${parseFloat(c.ser).toFixed(1)}</td><td>${parseFloat(c.decidir).toFixed(1)}</td><td><strong>${c.media}</strong></td></tr>`).join('')}
+  </tbody></table>`:''}
+
+  <h2>5. Inserción sociolaboral</h2>
+  <p>Se han registrado <strong>${datos.TOTAL_INSERCIONES} inserciones sociolaborales</strong>, lo que representa
+  una tasa de inserción del <strong>${datos.PCT_INSERCION}</strong> sobre el total de participantes del MIS.</p>
+
+  <h2>6. Evidencias documentales</h2>
+  <p>El banco de evidencias cuenta con <strong>${datos.TOTAL_EVIDENCIAS} registros</strong>
+  (fotografías antes/durante/después, partes de trabajo y documentos de seguimiento).</p>
+
+  <h2>7. Conclusiones</h2>
+  <p>El MIS <strong>${datos.ID_MIS}</strong> ha alcanzado sus objetivos principales, con
+  ${datos.TOTAL_ACTUACIONES} actuaciones de mejora urbana, ${datos.TOTAL_HORAS} horas de formación práctica y
+  una tasa de inserción del ${datos.PCT_INSERCION}. El equipo técnico ERACIS+ recomienda la continuidad
+  del programa en la zona de intervención.</p>
+  `;
+
+  // Datos JSON
+  $('memoria-datos-json').innerHTML = `<span class="m-head">// MISIA MEMORY ENGINE v2.0 — Datos estructurados</span><br>` +
+    Object.entries(datos).map(([k,v])=>
+      `<span class="m-label">${k.padEnd(28)}</span> <span class="m-val">${v}</span>`
+    ).join('<br>');
+
+  toast('Memoria generada correctamente ✓');
+}
+
+function exportarMemoriaPDF() {
+  const preview = $('memoria-preview');
+  if (!preview.innerHTML.trim() || preview.innerHTML.includes('Pulsa')) {
+    generarMemoria();
+  }
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>Memoria Técnica ${DB.config.idMIS}</title>
+    <style>
+      body{font-family:Arial,sans-serif;font-size:11pt;max-width:800px;margin:2rem auto;line-height:1.6;color:#222}
+      h1{font-size:16pt;color:#1a237e;text-align:center;margin-bottom:.5rem}
+      h2{font-size:12pt;color:#1a237e;border-bottom:2px solid #f9a825;padding-bottom:4px;margin:1.2rem 0 .6rem}
+      table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:.5rem 0}
+      th{background:#1a237e;color:white;padding:5px 8px;text-align:left}
+      td{padding:4px 8px;border-bottom:1px solid #ddd}
+      p{margin:.4rem 0}
+    </style>
+  </head><body>${preview.innerHTML}</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),800);
+}
+
+function copiarCodigo() {
+  const texto = $('codigo-appsscript').innerText;
+  navigator.clipboard.writeText(texto).then(()=>toast('Código copiado al portapapeles ✓'));
+}
+
+// ─── CERTIFICADOS ───
+function generarCertificados() {
+  if (DB.competencias.length === 0) calcularCompetencias();
+  if (DB.indices.length === 0) calcularIndices();
+  const lista = $('certificados-lista');
+  if (DB.participantes.length === 0) {
+    lista.innerHTML = '<p style="color:var(--gray-mid);text-align:center;padding:1.5rem">No hay participantes registrados</p>';
+    return;
+  }
+  lista.innerHTML = DB.participantes.map(p => {
+    const c = DB.competencias.find(x=>x.idParticipante===p.id);
+    const idx = DB.indices.find(x=>x.idParticipante===p.id);
+    const horas = DB.participacion.filter(r=>r.idParticipante===p.id&&r.asistencia==='SI')
+      .reduce((s,r)=>{ const a=DB.actuaciones.find(x=>x.id===r.idActuacion); return s+(a?parseFloat(a.horas):0); },0);
+    const nivel = idx?idx.nivel:'Sin calcular';
+    const indice = idx?idx.indice:0;
+    const colorNivel = idx?idx.color:'var(--gray-mid)';
+    return `
+    <div class="card" style="margin-bottom:.75rem">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap.75rem;gap:.75rem">
+          <div class="participant-avatar" style="background:${colorAvatar(p.nombre)};width:36px;height:36px;font-size:.8rem;flex-shrink:0">${p.nombre[0]}${p.apellidos[0]}</div>
+          <div>
+            <div style="font-weight:700">${p.nombre} ${p.apellidos}</div>
+            <div style="font-size:.75rem;color:var(--gray-mid)">${p.id} · ${horas}h realizadas</div>
+          </div>
+        </div>
+        <span class="badge" style="background:${colorNivel}22;color:${colorNivel}">${nivel}</span>
+      </div>
+      <div class="card-body">
+        ${c ? `
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:.75rem;font-size:.8rem">
+          <div><div style="color:var(--gray-mid)">Saber</div><div style="font-weight:700">${parseFloat(c.saber).toFixed(1)}/10</div></div>
+          <div><div style="color:var(--gray-mid)">Saber Hacer</div><div style="font-weight:700">${parseFloat(c.hacer).toFixed(1)}/10</div></div>
+          <div><div style="color:var(--gray-mid)">Saber Ser</div><div style="font-weight:700">${parseFloat(c.ser).toFixed(1)}/10</div></div>
+          <div><div style="color:var(--gray-mid)">Saber Decidir</div><div style="font-weight:700">${parseFloat(c.decidir).toFixed(1)}/10</div></div>
+        </div>
+        ` : '<p style="color:var(--gray-mid);font-size:.85rem">Sin competencias calculadas</p>'}
+        <div style="font-size:.8rem;color:var(--text-mid);background:var(--gray-bg);padding:.6rem .75rem;border-radius:6px">
+          <strong>Recomendación:</strong> ${indice>=75?'Candidato/a apto/a para inserción laboral directa en construcción y mantenimiento.':indice>=50?'Evolución adecuada. Continuar con práctica en obra real.':indice>=25?'Riesgo medio. Se recomienda tutoría individualizada.':'Riesgo alto. Intervención urgente del equipo técnico ERACIS+.'}
+        </div>
+        <div style="margin-top:.5rem;display:flex;justify-content:flex-end">
+          <button class="btn btn-ghost btn-sm" onclick="imprimirCertificado('${p.id}')">🖨️ Imprimir informe</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  toast(`${DB.participantes.length} certificados generados ✓`);
+}
+
+function imprimirCertificado(idPart) {
+  const p = DB.participantes.find(x=>x.id===idPart);
+  const c = DB.competencias.find(x=>x.idParticipante===idPart);
+  const idx = DB.indices.find(x=>x.idParticipante===idPart);
+  if (!p) return;
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>Informe Competencias — ${p.nombre} ${p.apellidos}</title>
+    <style>body{font-family:Arial,sans-serif;font-size:11pt;max-width:700px;margin:2rem auto;line-height:1.6}
+    h1{color:#1a237e;font-size:15pt;margin-bottom:.3rem}
+    h2{color:#1a237e;font-size:11pt;border-bottom:1px solid #f9a825;margin:1rem 0 .4rem}
+    .nivel{display:inline-block;padding:4px 14px;border-radius:4px;font-weight:700;font-size:10pt;background:#e8eaf6;color:#1a237e}
+    table{width:100%;border-collapse:collapse;font-size:10pt}
+    th{background:#1a237e;color:white;padding:5px 8px}td{padding:4px 8px;border-bottom:1px solid #eee}
+    .footer{margin-top:3rem;border-top:1px solid #ddd;padding-top:1rem;font-size:9pt;color:#888;display:flex;justify-content:space-between}
+    </style>
+  </head><body>
+    <h1>Informe Técnico de Competencias Adquiridas</h1>
+    <p style="color:#888;font-size:10pt">Programa ERACIS+ Jaén · ${DB.config.zona}<br>Emitido: ${new Date().toLocaleDateString('es-ES')}</p>
+    <h2>Datos del participante</h2>
+    <table><tr><td><strong>Nombre</strong></td><td>${p.nombre} ${p.apellidos}</td><td><strong>DNI/NIE</strong></td><td>${p.dni||'—'}</td></tr>
+    <tr><td><strong>ID</strong></td><td>${p.id}</td><td><strong>MIS</strong></td><td>${DB.config.idMIS}</td></tr></table>
+    <h2>Nivel de evolución</h2>
+    <span class="nivel">${idx?idx.nivel:'SIN CALCULAR'} — Índice MISIA™: ${idx?idx.indice:0}/100</span>
+    <h2>Competencias evaluadas</h2>
+    ${c?`<table><tr><th>Dimensión</th><th>Puntuación</th><th>Nivel</th></tr>
+    <tr><td>📚 Saber (conocimiento teórico)</td><td>${parseFloat(c.saber).toFixed(1)}/10</td><td>${c.saber>=7?'Avanzado':c.saber>=5?'Básico':'Inicial'}</td></tr>
+    <tr><td>🔧 Saber Hacer (habilidades técnicas)</td><td>${parseFloat(c.hacer).toFixed(1)}/10</td><td>${c.hacer>=7?'Avanzado':c.hacer>=5?'Básico':'Inicial'}</td></tr>
+    <tr><td>🤝 Saber Ser (actitud profesional)</td><td>${parseFloat(c.ser).toFixed(1)}/10</td><td>${c.ser>=7?'Avanzado':c.ser>=5?'Básico':'Inicial'}</td></tr>
+    <tr><td>🧭 Saber Decidir (autonomía)</td><td>${parseFloat(c.decidir).toFixed(1)}/10</td><td>${c.decidir>=7?'Avanzado':c.decidir>=5?'Básico':'Inicial'}</td></tr>
+    </table>`:'<p>Sin datos de competencias</p>'}
+    <h2>Recomendaciones</h2>
+    <p>${idx&&idx.indice>=75?'Candidato/a apto/a para inserción laboral directa. Se recomienda orientación hacia ofertas de empleo en construcción y mantenimiento urbano.':idx&&idx.indice>=50?'Evolución adecuada. Continuar con práctica en obra real y reforzar módulo teórico. Orientar hacia bolsa de empleo.':idx&&idx.indice>=25?'Riesgo medio. Se recomienda tutoría individualizada para identificar barreras. Reforzar asistencia y motivación.':'Riesgo alto. Se recomienda intervención urgente del equipo técnico ERACIS+ y valoración de derivación a servicios especializados.'}</p>
+    <div class="footer">
+      <span>Emitido por el equipo técnico ERACIS+ Jaén</span>
+      <span>Documento de apoyo — No es certificado oficial</span>
+    </div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),600);
+}
+
+// ─── EMBLEMA ───
+function calcularEmblemas() {
+  if (DB.actuaciones.length === 0) { toast('No hay actuaciones para evaluar','error'); return; }
+  const puntuadas = DB.actuaciones.map(a => {
+    const evidencias = DB.evidencias.filter(e=>e.idActuacion===a.id).length;
+    const partic = DB.participacion.filter(p=>p.idActuacion===a.id&&p.asistencia==='SI').length;
+    const pImpacto = Math.min(100, (evidencias+1)*15);
+    const pInnov = (a.cierre||3)*20;
+    const pDuracion = Math.min(100,(a.horas||4)*10);
+    const pEstado = a.estado==='FINALIZADA'?100:50;
+    const total = Math.round(pImpacto*.4+pInnov*.3+pDuracion*.2+pEstado*.1);
+    return { id:a.id, desc:a.tipo, lugar:a.lugar, pImpacto, pInnov, pDuracion, total };
+  }).sort((a,b)=>b.total-a.total);
+
+  // Podium
+  const podium = $('emblema-podium');
+  const order = [puntuadas[1], puntuadas[0], puntuadas[2]].filter(Boolean);
+  const classes = ['plata','oro','bronce'];
+  const crowns = ['🥈','🥇','🥉'];
+  const labels = ['Plata','Oro · Mejor actuación','Bronce'];
+  podium.innerHTML = order.map((a,i)=>`
+  <div class="emblema-card ${classes[i]}">
+    <div class="emblema-bg-num">${i===1?1:i===0?2:3}</div>
+    <div class="emblema-crown">${crowns[i]}</div>
+    <p class="emblema-pos">${labels[i]}</p>
+    <p class="emblema-nombre">${a.desc}</p>
+    <p style="font-size:.75rem;opacity:.7;margin:.25rem 0">${a.lugar}</p>
+    <div class="emblema-score">${a.total}<span style="font-size:.9rem">/100</span></div>
+  </div>`).join('');
+
+  // Tabla
+  $('emblema-tabla').innerHTML = puntuadas.map((a,i)=>`
+  <tr>
+    <td style="font-weight:${i<3?700:400}">${a.id} — ${a.desc}</td>
+    <td>${a.pImpacto}</td><td>${a.pInnov}</td><td>${a.pDuracion}</td>
+    <td style="font-weight:700">${a.total}/100</td>
+    <td>${i===0?'🥇':i===1?'🥈':i===2?'🥉':'—'}</td>
+  </tr>`).join('');
+  toast('Top 3 Actuaciones Emblema™ calculadas ✓');
+}
+
+// ─── DASHBOARD ───
+function actualizarDashboard() {
+  $('fecha-hoy').textContent = new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  $('mis-activo-badge').textContent = DB.config.idMIS;
+
+  const activos = DB.participantes.filter(p=>p.estado==='ACTIVO').length;
+  $('m-participantes').textContent = activos;
+  $('m-part-sub').textContent = `${DB.participantes.length} registrados en total`;
+
+  const presentes = DB.participacion.filter(r=>r.asistencia==='SI').length;
+  const totalReg = DB.participacion.length;
+  $('m-presentes').textContent = presentes;
+  const pctAsist = totalReg > 0 ? Math.round((presentes/totalReg)*100) : 0;
+  const mAsistEl = $('m-asist-pct');
+  mAsistEl.textContent = `${pctAsist}% asistencia global`;
+  mAsistEl.className = `metric-change ${pctAsist>=75?'up':pctAsist>=50?'neutral':'down'}`;
+
+  const riesgo = DB.indices.filter(i=>i.indice<50).length;
+  $('m-riesgo').textContent = riesgo;
+  $('m-actuaciones').textContent = DB.actuaciones.length;
+  $('m-horas').textContent = `${DB.actuaciones.reduce((s,a)=>s+(parseFloat(a.horas)||0),0).toFixed(0)}h totales`;
+  $('m-inserciones').textContent = DB.inserciones.length;
+  const pctIns = activos>0 ? Math.round((DB.inserciones.length/activos)*100) : 0;
+  $('m-ins-pct').textContent = `${pctIns}% del grupo`;
+  $('m-ins-pct').className = `metric-change ${pctIns>=30?'up':'neutral'}`;
+
+  const medioIdx = DB.indices.length > 0 ? Math.round(DB.indices.reduce((s,i)=>s+i.indice,0)/DB.indices.length) : null;
+  $('m-indice-medio').textContent = medioIdx !== null ? medioIdx : '—';
+  $('m-ind-nivel').textContent = medioIdx !== null ? (medioIdx>=75?'Buen desempeño':medioIdx>=50?'Adecuado':'En riesgo') : 'Calcula el índice';
+
+  // Distribución índice
+  const total = DB.indices.length || 1;
+  const cats = [
+    [i=>i>=90,'destacados','pct-destacados','bar-destacados'],
+    [i=>i>=75&&i<90,'bueno','pct-bueno','bar-bueno'],
+    [i=>i>=50&&i<75,'adecuado','pct-adecuado','bar-adecuado'],
+    [i=>i>=25&&i<50,'riesgo-m','pct-riesgo-m','bar-riesgo-m'],
+    [i=>i<25,'riesgo-a','pct-riesgo-a','bar-riesgo-a'],
+  ];
+  cats.forEach(([fn,,pctId,barId])=>{
+    const n = DB.indices.filter(i=>fn(i.indice)).length;
+    const pct = Math.round((n/total)*100);
+    $(pctId).textContent = `${n} (${pct}%)`;
+    $(barId).style.width = `${pct}%`;
+  });
+
+  // Alertas panel
+  const alertasPend = DB.alertas.filter(a=>!a.resuelta).slice(0,4);
+  $('dashboard-alertas').innerHTML = alertasPend.length === 0
+    ? '<p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:.5rem">Sin alertas activas ✓</p>'
+    : alertasPend.map(a=>`
+    <div class="alert-item ${a.nivel}" style="margin-bottom:.4rem">
+      <div class="alert-dot"></div>
+      <div class="alert-item-text"><strong>${a.tipo}</strong>${a.texto}</div>
+    </div>`).join('');
+
+  // Últimas actuaciones (3)
+  const ultActs = DB.actuaciones.slice(-3).reverse();
+  $('dashboard-actuaciones-list').innerHTML = ultActs.length === 0
+    ? '<p style="color:var(--gray-mid);font-size:.85rem;text-align:center;padding:.5rem">Sin actuaciones registradas</p>'
+    : ultActs.map(a => {
+      const d = new Date(a.fecha);
+      return `
+      <div style="display:flex;gap:.75rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--gray-brd);last-child:border:none">
+        <div style="background:var(--blue);color:white;border-radius:6px;padding:.3rem .5rem;text-align:center;min-width:38px">
+          <div style="font-size:.9rem;font-weight:800">${d.getDate()}</div>
+          <div style="font-size:.6rem;opacity:.7">${d.toLocaleString('es-ES',{month:'short'}).toUpperCase()}</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:.85rem;font-weight:600">${a.tipo}</div>
+          <div style="font-size:.75rem;color:var(--gray-mid)">${a.lugar} · ${a.horas}h</div>
+        </div>
+        <span class="badge ${a.estado==='FINALIZADA'?'badge-green':a.estado==='ACTIVA'?'badge-gold':'badge-blue'}">${a.estado}</span>
+      </div>`;
+    }).join('');
+
+  // Inserción
+  const ins = DB.inserciones.length;
+  $('dashboard-insercion-stats').innerHTML = ins === 0
+    ? '<p style="color:var(--gray-mid);font-size:.85rem">Sin inserciones registradas aún</p>'
+    : `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <span style="font-size:2rem;font-weight:800;color:var(--green)">${ins}</span>
+      <span class="badge badge-green">Tasa: ${pctIns}%</span>
+    </div>
+    <div class="progress-track" style="height:10px">
+      <div class="progress-fill p-green" style="width:${pctIns}%"></div>
+    </div>
+    <p style="font-size:.77rem;color:var(--gray-mid);margin-top:.4rem">Sobre ${activos} participantes activos</p>`;
+
+  // Emblema rápido
+  if (DB.actuaciones.length > 0) {
+    const topAct = DB.actuaciones.reduce((prev,cur) => (cur.cierre||3)>(prev.cierre||3)?cur:prev, DB.actuaciones[0]);
+    $('dashboard-emblema').innerHTML = `
+    <div style="background:linear-gradient(135deg,#f9a825,#f57f17);border-radius:8px;padding:1rem;color:#4a2800;text-align:center">
+      <div style="font-size:1.5rem">🥇</div>
+      <div style="font-weight:800;font-size:.9rem;margin:.25rem 0">${topAct.tipo}</div>
+      <div style="font-size:.78rem;opacity:.75">${topAct.lugar}</div>
+    </div>`;
+  }
+
+  // Badges sidebar
+  actualizarBadges();
+}
+
+function actualizarBadges() {
+  $('badge-participantes').textContent = DB.participantes.length;
+  $('badge-actuaciones').textContent = DB.actuaciones.length;
+  const alertasPend = DB.alertas.filter(a=>!a.resuelta).length;
+  const badgeAlertas = $('badge-alertas');
+  badgeAlertas.textContent = alertasPend;
+  badgeAlertas.style.display = alertasPend > 0 ? '' : 'none';
+}
+
+// ─── CONFIGURACIÓN ───
+function actualizarPonderacion(key, val) {
+  DB.ponderaciones[key] = parseInt(val);
+  $(`lbl-${key}`)&&($(`lbl-${key}`).textContent = `${val}%`);
+  const suma = Object.values(DB.ponderaciones).reduce((s,v)=>s+v,0);
+  $('alerta-ponderacion').style.display = suma !== 100 ? 'flex' : 'none';
+}
+
+function guardarPonderaciones() {
+  const suma = Object.values(DB.ponderaciones).reduce((s,v)=>s+v,0);
+  if (suma !== 100) { toast(`Las ponderaciones suman ${suma}%, deben sumar 100%`,'error'); return; }
+  guardarLocalStorage();
+  toast('Ponderaciones guardadas ✓');
+}
+
+function guardarConfig() {
+  DB.config.idMIS = $('cfg-id-mis').value || 'MIS-001';
+  DB.config.fechaInicio = $('cfg-fecha-inicio').value;
+  DB.config.fechaFin = $('cfg-fecha-fin').value;
+  DB.config.formador = $('cfg-formador').value;
+  DB.config.zona = $('cfg-zona').value;
+  DB.config.estado = $('cfg-estado').value;
+  guardarLocalStorage();
+  $('mis-activo-badge').textContent = DB.config.idMIS;
+  toast('Configuración guardada ✓');
+}
+
+function exportarDatos() {
+  const json = JSON.stringify(DB, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `MISIA_${DB.config.idMIS}_${hoy()}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Datos exportados como JSON ✓');
+}
+
+function importarDatos() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        Object.assign(DB, imported);
+        guardarLocalStorage();
+        toast('Datos importados correctamente ✓');
+        actualizarDashboard();
+      } catch(err) { toast('Error al importar: archivo no válido','error'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function verEstadoSistema() {
+  toast(`MISIA v1.0 · ${DB.participantes.length} part. · ${DB.actuaciones.length} act. · ${DB.competencias.length} comp. calculadas`,'success');
+}
+
+function resetearSistema() {
+  if (!confirm('¿Seguro? Se borrarán TODOS los datos del sistema.')) return;
+  ['participantes','actuaciones','participacion','evidencias','competencias','inserciones','alertas','indices']
+    .forEach(k => DB[k]=[]);
+  guardarLocalStorage();
+  toast('Sistema reseteado','warning');
+  actualizarDashboard();
+}
+
+// ─── TABS ───
+function cambiarTab(btn, panelId) {
+  const parent = btn.closest('.tabs').nextElementSibling ? btn.closest('.tabs').parentElement : btn.parentElement;
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  parent.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  const panel = $(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+  cargarLocalStorage();
+  // Fecha por defecto en formularios
+  const hoyStr = hoy();
+  if ($('cfg-fecha-inicio')) $('cfg-fecha-inicio').value = DB.config.fechaInicio || hoyStr;
+  if ($('cfg-fecha-fin')) $('cfg-fecha-fin').value = DB.config.fechaFin || '';
+  if ($('cfg-formador')) $('cfg-formador').value = DB.config.formador || '';
+  if ($('cfg-zona')) $('cfg-zona').value = DB.config.zona || 'Zona ERACIS+ Jaén capital';
+  actualizarDashboard();
+});
+</script>
+</body>
+</html>
